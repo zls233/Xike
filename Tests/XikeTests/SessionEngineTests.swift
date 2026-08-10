@@ -56,16 +56,20 @@ final class SessionEngineTests: XCTestCase {
         clock = origin.addingTimeInterval(180)
         engine.tick()
         XCTAssertEqual(engine.phase, .microBreak)
-        XCTAssertEqual(engine.phaseDeadline, origin.addingTimeInterval(190))
+        XCTAssertEqual(engine.microBreakIntroDeadline, origin.addingTimeInterval(181.5))
+        XCTAssertEqual(engine.phaseDeadline, origin.addingTimeInterval(191.5))
+        XCTAssertTrue(engine.isMicroBreakIntro(at: origin.addingTimeInterval(181)))
+        XCTAssertEqual(engine.microBreakCountdownRemaining(at: origin.addingTimeInterval(181)), 10)
+        XCTAssertFalse(engine.isMicroBreakIntro(at: origin.addingTimeInterval(181.5)))
         XCTAssertEqual(engine.focusDeadline, originalFocusDeadline)
         XCTAssertEqual(engine.microBreaksTriggered, 1)
 
-        clock = origin.addingTimeInterval(190)
+        clock = origin.addingTimeInterval(191.5)
         engine.tick()
         XCTAssertEqual(engine.phase, .focusing)
         XCTAssertEqual(engine.microBreaksCompleted, 1)
         XCTAssertEqual(engine.focusDeadline, originalFocusDeadline)
-        XCTAssertEqual(engine.nextPromptAt, origin.addingTimeInterval(370))
+        XCTAssertEqual(engine.nextPromptAt, origin.addingTimeInterval(371.5))
 
         clock = originalFocusDeadline
         engine.tick()
@@ -88,7 +92,7 @@ final class SessionEngineTests: XCTestCase {
         XCTAssertEqual(engine.microBreaksTriggered, 1)
         XCTAssertEqual(engine.microBreaksSkipped, 1)
         XCTAssertEqual(engine.microBreaksCompleted, 0)
-        XCTAssertEqual(engine.nextPromptAt, origin.addingTimeInterval(162))
+        XCTAssertEqual(engine.nextPromptAt, origin.addingTimeInterval(282))
         XCTAssertTrue(events.contains(.microBreakSkipped(at: origin.addingTimeInterval(102))))
     }
 
@@ -127,7 +131,7 @@ final class SessionEngineTests: XCTestCase {
         )
         XCTAssertTrue(engine.start())
 
-        engine.tick(at: origin.addingTimeInterval(840))
+        XCTAssertTrue(engine.triggerMicroBreak(at: origin.addingTimeInterval(838.5)))
         XCTAssertEqual(engine.phase, .microBreak)
         engine.tick(at: origin.addingTimeInterval(900))
 
@@ -171,7 +175,8 @@ final class SessionEngineTests: XCTestCase {
         XCTAssertTrue(engine.resume(at: origin.addingTimeInterval(124)))
 
         XCTAssertEqual(engine.focusDeadline, origin.addingTimeInterval(5_420))
-        XCTAssertEqual(engine.phaseDeadline, origin.addingTimeInterval(130))
+        XCTAssertEqual(engine.microBreakIntroDeadline, origin.addingTimeInterval(121.5))
+        XCTAssertEqual(engine.phaseDeadline, origin.addingTimeInterval(131.5))
     }
 
     func testPauseDuringLongBreakDoesNotChangeCompletedFocusDeadline() {
@@ -191,6 +196,46 @@ final class SessionEngineTests: XCTestCase {
 
         XCTAssertEqual(engine.focusDeadline, origin.addingTimeInterval(900))
         XCTAssertEqual(engine.phaseDeadline, origin.addingTimeInterval(1_260))
+    }
+
+    func testSkippingLongBreakEndsCompletedCycleWithoutCompletionFlag() {
+        let configuration = FocusConfiguration(
+            focusMinutes: 15,
+            longBreakMinutes: 5,
+            minimumPromptMinutes: 1,
+            maximumPromptMinutes: 1
+        )
+        let engine = SessionEngine(configuration: configuration, now: { self.origin })
+        var events: [SessionEvent] = []
+        engine.onEvent = { events.append($0) }
+
+        XCTAssertTrue(engine.start())
+        engine.tick(at: origin.addingTimeInterval(900))
+        XCTAssertEqual(engine.phase, .longBreak)
+        XCTAssertTrue(engine.skipLongBreak(at: origin.addingTimeInterval(930)))
+
+        XCTAssertEqual(engine.phase, .awaitingNextCycle)
+        XCTAssertEqual(engine.lastRecord?.outcome, .completed)
+        XCTAssertEqual(engine.lastRecord?.longBreakCompleted, false)
+        XCTAssertTrue(events.contains(.longBreakSkipped(at: origin.addingTimeInterval(930))))
+    }
+
+    func testLongBreakCanEndWhilePausedWithoutAbortingCompletedFocus() {
+        let configuration = FocusConfiguration(
+            focusMinutes: 15,
+            longBreakMinutes: 5,
+            minimumPromptMinutes: 1,
+            maximumPromptMinutes: 1
+        )
+        let engine = SessionEngine(configuration: configuration, now: { self.origin })
+        XCTAssertTrue(engine.start())
+        engine.tick(at: origin.addingTimeInterval(900))
+        XCTAssertTrue(engine.pause(at: origin.addingTimeInterval(910)))
+
+        XCTAssertTrue(engine.skipLongBreak(at: origin.addingTimeInterval(920)))
+        XCTAssertEqual(engine.phase, .awaitingNextCycle)
+        XCTAssertEqual(engine.lastRecord?.outcome, .completed)
+        XCTAssertEqual(engine.lastRecord?.longBreakCompleted, false)
     }
 
     func testDelayedTickCrossesFocusAndLongBreakWithoutDrift() {

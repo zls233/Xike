@@ -16,6 +16,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let store = AppStore.shared
         guard store.engine.canEnd else { return .terminateNow }
 
+        if store.engine.phase == .longBreak {
+            store.skipLongBreak()
+            return .terminateNow
+        }
+
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
         alert.alertStyle = .warning
@@ -61,18 +66,24 @@ struct XikeApp: App {
                 .disabled(!canPerformPrimaryCommand)
 
                 Button("结束本轮", systemImage: "stop.fill") {
-                    store.showEndConfirmation = true
+                    store.requestEndSession()
                     NSApp.activate(ignoringOtherApps: true)
                 }
                 .keyboardShortcut(".", modifiers: [.command])
                 .disabled(!store.engine.canEnd)
+
+                Button("跳过长休息", systemImage: "forward.end.fill") {
+                    store.skipLongBreak()
+                }
+                .keyboardShortcut("l", modifiers: [.command, .shift])
+                .disabled(store.engine.phase != .longBreak || store.engine.isPaused)
             }
         }
 
         MenuBarExtra {
             MenuBarView(store: store)
         } label: {
-            Label("息刻", systemImage: store.engine.phase.systemImage)
+            Label("息刻", systemImage: store.statusSystemImage)
                 .accessibilityLabel("息刻，\(store.phaseTitle)")
         }
         .menuBarExtraStyle(.window)

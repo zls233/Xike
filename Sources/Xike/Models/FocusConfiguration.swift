@@ -46,6 +46,8 @@ public struct FocusConfiguration: Codable, Equatable, Sendable {
     public static let microBreakSecondsRange = 5 ... 60
     public static let promptMinutesRange = 1 ... 30
     public static let defaultSoundID = "builtin:softBell"
+    /// A brief, non-counting introduction shown before each micro-break countdown.
+    public static let microBreakIntroDuration: TimeInterval = 1.5
 
     public var focusMinutes: Int
     public var longBreakMinutes: Int
@@ -88,6 +90,12 @@ public struct FocusConfiguration: Codable, Equatable, Sendable {
 
     public var microBreakDuration: TimeInterval {
         TimeInterval(microBreakSeconds)
+    }
+
+    /// The intro is part of the break so the visible countdown always starts at
+    /// the configured number of seconds instead of losing time during animation.
+    public var microBreakPresentationDuration: TimeInterval {
+        Self.microBreakIntroDuration + microBreakDuration
     }
 
     public var promptIntervalRange: ClosedRange<TimeInterval> {

@@ -23,7 +23,7 @@ extension SessionPhase {
         switch self {
         case .idle: "circle.dotted"
         case .focusing: "scope"
-        case .microBreak: "eye"
+        case .microBreak: "wind"
         case .longBreak: "cup.and.saucer"
         case .awaitingNextCycle: "checkmark.circle"
         }

@@ -5,7 +5,6 @@ struct TimerCardView: View {
 
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Namespace private var glassNamespace
 
     private var displayedTime: TimeInterval {
         switch store.engine.phase {
@@ -13,32 +12,28 @@ struct TimerCardView: View {
             store.preferences.configuration.focusDuration
         case .awaitingNextCycle:
             0
-        case .focusing, .microBreak, .longBreak:
+        case .microBreak:
+            store.engine.microBreakCountdownRemaining(at: store.displayDate)
+        case .focusing, .longBreak:
             store.remainingTime
         }
     }
 
     var body: some View {
-        GlassEffectContainer(spacing: 18) {
-            VStack(spacing: 24) {
-                phaseHeader
-                timer
-                controls
-            }
-            .padding(34)
-            .frame(maxWidth: .infinity, minHeight: 430)
-            .background {
-                if reduceTransparency {
-                    RoundedRectangle(cornerRadius: 34, style: .continuous)
-                        .fill(.background)
-                }
-            }
-            .glassEffect(
-                reduceTransparency ? .identity : .regular,
-                in: .rect(cornerRadius: 34)
-            )
-            .glassEffectID("main-timer", in: glassNamespace)
+        VStack(spacing: 24) {
+            phaseHeader
+            timer
+            controls
         }
+        .padding(34)
+        .frame(maxWidth: .infinity, minHeight: 430)
+        .background {
+            if reduceTransparency {
+                RoundedRectangle(cornerRadius: 34, style: .continuous)
+                    .fill(.background)
+            }
+        }
+        .glassEffect(reduceTransparency ? .identity : .regular, in: .rect(cornerRadius: 34))
         .confirmationDialog(
             "结束当前这一轮？",
             isPresented: $store.showEndConfirmation
@@ -54,7 +49,7 @@ struct TimerCardView: View {
 
     private var phaseHeader: some View {
         VStack(spacing: 9) {
-            Label(store.phaseTitle, systemImage: store.engine.phase.systemImage)
+            Label(store.phaseTitle, systemImage: store.statusSystemImage)
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(store.engine.phase == .microBreak ? .mint : .primary)
             Text(store.phaseSubtitle)
@@ -83,8 +78,12 @@ struct TimerCardView: View {
                     .contentTransition(reduceMotion ? .identity : .numericText(countsDown: true))
                     .accessibilityLabel(TimeDisplay.accessibilityDuration(displayedTime))
 
-                if store.engine.phase == .focusing || store.engine.phase == .microBreak {
-                    Text("第 \(store.engine.microBreaksTriggered + 1) 段节律")
+                if store.engine.phase == .microBreak {
+                    Text(store.isMicroBreakIntro ? "短休息即将开始" : "第 \(store.engine.microBreaksTriggered) 次短休息")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                } else if store.engine.phase == .focusing {
+                    Text("已完成 \(store.engine.microBreaksCompleted) 次短休息")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
@@ -98,10 +97,18 @@ struct TimerCardView: View {
             primaryControl
 
             if store.engine.canEnd {
-                Button("结束", systemImage: "stop.fill") {
-                    store.showEndConfirmation = true
+                if store.engine.phase == .longBreak, !store.engine.isPaused {
+                    Button("结束休息", systemImage: "forward.end.fill") {
+                        store.skipLongBreak()
+                    }
+                    .buttonStyle(.glass)
+                    .accessibilityHint("结束长休息，决定是否开始下一轮专注")
+                } else {
+                    Button("结束", systemImage: "stop.fill") {
+                        store.requestEndSession()
+                    }
+                    .buttonStyle(.glass)
                 }
-            .buttonStyle(.glass)
             }
         }
         .controlSize(.large)

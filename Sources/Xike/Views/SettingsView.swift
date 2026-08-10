@@ -48,6 +48,9 @@ struct SettingsView: View {
                     value: focusMinutes,
                     in: FocusConfiguration.focusMinutesRange
                 )
+                Text("正在进行中的本轮保持当前参数；修改从下一轮生效。短休息会先显示 1.5 秒提示，再开始倒计时。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 Stepper(
                     "长休息 \(store.preferences.configuration.longBreakMinutes) 分钟",
                     value: longBreakMinutes,

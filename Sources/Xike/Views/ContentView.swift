@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct ContentView: View {
@@ -43,12 +44,12 @@ struct ContentView: View {
 
     private var dashboard: some View {
         ScrollView {
-            VStack(spacing: 18) {
-                if store.shouldOfferResume {
-                    resumeBanner
-                }
+            GlassEffectContainer(spacing: 22) {
+                VStack(spacing: 18) {
+                    if store.shouldOfferResume {
+                        resumeBanner
+                    }
 
-                GlassEffectContainer(spacing: 22) {
                     HStack(alignment: .top, spacing: 22) {
                         TimerCardView(store: store)
                             .frame(maxWidth: .infinity)
@@ -103,6 +104,14 @@ struct ContentView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 14)
-        .glassEffect(.regular, in: .rect(cornerRadius: 20))
+        .background {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color(nsColor: NSColor.windowBackgroundColor))
+                .opacity(NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency ? 1 : 0)
+        }
+        .glassEffect(
+            NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency ? .identity : .regular,
+            in: .rect(cornerRadius: 20)
+        )
     }
 }

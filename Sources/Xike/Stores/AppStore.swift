@@ -81,7 +81,7 @@ final class AppStore {
             return focusProgress
         case .microBreak:
             let duration = max(engine.configuration.microBreakDuration, 1)
-            return min(max(1 - remainingTime / duration, 0), 1)
+            return min(max(1 - engine.microBreakCountdownRemaining(at: displayDate) / duration, 0), 1)
         case .longBreak:
             let duration = max(engine.configuration.longBreakDuration, 1)
             return min(max(1 - remainingTime / duration, 0), 1)
@@ -93,11 +93,12 @@ final class AppStore {
     }
 
     var phaseTitle: String {
+        if recoverySnapshot != nil { return "待恢复专注" }
         if engine.isPaused { return "已暂停" }
         return switch engine.phase {
         case .idle: "准备专注"
         case .focusing: "专注中"
-        case .microBreak: "微休息"
+        case .microBreak: engine.isMicroBreakIntro(at: displayDate) ? "短休息开始" : "短休息"
         case .longBreak: "长休息"
         case .awaitingNextCycle: "本轮完成"
         }
@@ -108,12 +109,21 @@ final class AppStore {
             return engine.pauseReason == .manual ? "由你决定何时继续" : "回来后继续本轮"
         }
         return switch engine.phase {
-        case .idle: "用 90 分钟进入自己的节奏"
+        case .idle: "用 \(preferences.configuration.focusMinutes) 分钟进入自己的节奏"
         case .focusing: "提示会在合适的时候出现"
-        case .microBreak: "望向远处，放松肩颈"
+        case .microBreak: engine.isMicroBreakIntro(at: displayDate) ? "请暂时离开屏幕" : "望向远处，放松肩颈"
         case .longBreak: "离开屏幕，好好恢复"
         case .awaitingNextCycle: "准备好后再开始下一轮"
         }
+    }
+
+    var statusSystemImage: String {
+        if recoverySnapshot != nil { return "arrow.counterclockwise.circle" }
+        return engine.phase.systemImage
+    }
+
+    var isMicroBreakIntro: Bool {
+        engine.isMicroBreakIntro(at: displayDate)
     }
 
     func start() {
@@ -144,6 +154,7 @@ final class AppStore {
 
     @discardableResult
     func startSession() -> Bool {
+        microBreakPanel.dismiss()
         recoverySnapshot = nil
         shouldOfferResume = false
         snapshotStore.clear()
@@ -180,6 +191,22 @@ final class AppStore {
         persistSnapshot(force: true)
     }
 
+    func skipLongBreak() {
+        guard engine.skipLongBreak() else { return }
+        shouldOfferResume = false
+        persistSnapshot(force: true)
+    }
+
+    /// Long break is post-focus recovery, not an unfinished focus session.
+    /// Its end control must therefore never use the abort confirmation.
+    func requestEndSession() {
+        if engine.phase == .longBreak {
+            skipLongBreak()
+        } else {
+            showEndConfirmation = true
+        }
+    }
+
     func restoreSavedSession() {
         guard let snapshot = recoverySnapshot else { return }
         guard engine.restore(from: snapshot) else {
@@ -199,6 +226,7 @@ final class AppStore {
     }
 
     func resetCompletedCycle() {
+        microBreakPanel.dismiss()
         engine.resetToIdle()
     }
 
@@ -249,7 +277,10 @@ final class AppStore {
         displayDate = Date()
         engine.tick(at: displayDate)
         if engine.phase == .microBreak, !engine.isPaused {
-            microBreakPanel.updateMicroBreak(remainingSeconds: Int(ceil(remainingTime)))
+            microBreakPanel.updateMicroBreak(
+                isShowingCountdown: !engine.isMicroBreakIntro(at: displayDate),
+                remainingSeconds: Int(ceil(engine.microBreakCountdownRemaining(at: displayDate)))
+            )
         }
         persistSnapshot(force: false)
     }
@@ -284,6 +315,7 @@ final class AppStore {
         case .longBreakStarted:
             microBreakPanel.dismiss()
             playConfiguredSound()
+            microBreakPanel.showLongBreak()
             if preferences.notificationsEnabled {
                 Task { [notificationService, minutes = engine.configuration.longBreakMinutes] in
                     _ = try? await notificationService.notifyLongBreakStarted(durationMinutes: minutes)
@@ -292,11 +324,22 @@ final class AppStore {
 
         case .longBreakCompleted:
             playConfiguredSound()
+            microBreakPanel.showLongBreakCompletion(
+                onStartNextFocus: { [weak self] in
+                    _ = self?.startSession()
+                },
+                onEndFocus: { [weak self] in
+                    self?.resetCompletedCycle()
+                }
+            )
             if preferences.notificationsEnabled {
                 Task { [notificationService] in
                     _ = try? await notificationService.notifyLongBreakEnded()
                 }
             }
+
+        case .longBreakSkipped:
+            break
 
         case .sessionEnded(let record):
             history.add(record)
@@ -320,7 +363,8 @@ final class AppStore {
 
     private func showMicroBreakPanel() {
         microBreakPanel.showMicroBreak(
-            remainingSeconds: Int(ceil(remainingTime)),
+            isShowingCountdown: !engine.isMicroBreakIntro(at: displayDate),
+            remainingSeconds: Int(ceil(engine.microBreakCountdownRemaining(at: displayDate))),
             onSkip: { [weak self] in self?.skipMicroBreak() }
         )
     }

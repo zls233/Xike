@@ -9,7 +9,7 @@ struct MenuBarView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(spacing: 12) {
-                Image(systemName: store.engine.phase.systemImage)
+                Image(systemName: store.statusSystemImage)
                     .font(.title2)
                     .foregroundStyle(.tint)
                 VStack(alignment: .leading, spacing: 2) {
@@ -82,11 +82,24 @@ struct MenuBarView: View {
             }
 
             if store.engine.canEnd {
-                Button("结束", systemImage: "stop.fill") {
-                    store.showEndConfirmation = true
-                    showMainWindow()
+                if store.engine.phase == .microBreak, !store.engine.isPaused {
+                    Button("跳过短休息", systemImage: "forward.end.fill") {
+                        store.skipMicroBreak()
+                    }
+                    .buttonStyle(.glass)
                 }
-                .buttonStyle(.glass)
+                if store.engine.phase == .longBreak, !store.engine.isPaused {
+                    Button("结束长休息", systemImage: "forward.end.fill") {
+                        store.skipLongBreak()
+                    }
+                    .buttonStyle(.glass)
+                } else {
+                    Button("结束", systemImage: "stop.fill") {
+                        store.requestEndSession()
+                        showMainWindow()
+                    }
+                    .buttonStyle(.glass)
+                }
             }
         }
         .controlSize(.large)
@@ -95,9 +108,11 @@ struct MenuBarView: View {
     private var statusDetail: String {
         if store.engine.isPaused { return "等待你继续" }
         switch store.engine.phase {
-        case .idle: return "90 分钟 · 提示 3–5 分钟"
+        case .idle:
+            let config = store.preferences.configuration
+            return "\(config.focusMinutes) 分钟 · 提示 \(config.minimumPromptMinutes)–\(config.maximumPromptMinutes) 分钟"
         case .focusing: return "随机提示已开启"
-        case .microBreak: return "看看远处"
+        case .microBreak: return store.isMicroBreakIntro ? "短休息即将开始" : "看看远处"
         case .longBreak: return "离开屏幕"
         case .awaitingNextCycle: return "准备好再开始"
         }

@@ -80,6 +80,8 @@ public struct SessionSnapshot: Codable, Equatable, Sendable {
     public var startedAt: Date
     public var focusDeadline: Date
     public var phaseDeadline: Date?
+    /// Nil for snapshots produced before the micro-break intro was introduced.
+    public var microBreakIntroDeadline: Date?
     public var nextPromptAt: Date?
     public var pausedAt: Date?
     public var accumulatedPausedDuration: TimeInterval
@@ -98,6 +100,7 @@ public struct SessionSnapshot: Codable, Equatable, Sendable {
         startedAt: Date,
         focusDeadline: Date,
         phaseDeadline: Date?,
+        microBreakIntroDeadline: Date? = nil,
         nextPromptAt: Date?,
         pausedAt: Date?,
         accumulatedPausedDuration: TimeInterval,
@@ -115,6 +118,7 @@ public struct SessionSnapshot: Codable, Equatable, Sendable {
         self.startedAt = startedAt
         self.focusDeadline = focusDeadline
         self.phaseDeadline = phaseDeadline
+        self.microBreakIntroDeadline = microBreakIntroDeadline
         self.nextPromptAt = nextPromptAt
         self.pausedAt = pausedAt
         self.accumulatedPausedDuration = accumulatedPausedDuration
@@ -134,6 +138,7 @@ public enum SessionEvent: Equatable, Sendable {
     case microBreakSkipped(at: Date)
     case longBreakStarted(at: Date, deadline: Date)
     case longBreakCompleted(at: Date)
+    case longBreakSkipped(at: Date)
     case sessionEnded(SessionRecordValue)
     case snapshotRestored(at: Date)
     case invalidConfiguration(FocusConfigurationError)

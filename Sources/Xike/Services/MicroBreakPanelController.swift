@@ -2,17 +2,21 @@ import AppKit
 import Combine
 import SwiftUI
 
+private enum BreakOverlayKind {
+    case microBreak
+    case longBreakStart
+    case longBreakComplete
+}
+
 @MainActor
 private final class MicroBreakPresentation: ObservableObject {
-    @Published var remainingSeconds: Int
-    @Published var title: String
-    @Published var message: String
-
-    init(remainingSeconds: Int, title: String, message: String) {
-        self.remainingSeconds = remainingSeconds
-        self.title = title
-        self.message = message
-    }
+    @Published var kind: BreakOverlayKind = .microBreak
+    @Published var isShowingCountdown = false
+    @Published var remainingSeconds = 0
+    @Published var title = "短休息开始"
+    @Published var message = "请暂时离开屏幕，让眼睛和肩颈放松一下。"
+    @Published var primaryButtonTitle: String?
+    @Published var secondaryButtonTitle: String?
 }
 
 private final class NonActivatingMicroBreakPanel: NSPanel {
@@ -20,16 +24,23 @@ private final class NonActivatingMicroBreakPanel: NSPanel {
     override var canBecomeMain: Bool { false }
 }
 
-/// The one AppKit bridge needed by Xike: a non-activating panel above full-screen spaces.
-/// Session phase and countdown truth remain outside this controller.
+private final class FirstMouseHostingView: NSHostingView<AnyView> {
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+}
+
+/// A single, non-activating panel that is retained for the lifetime of the app.
+/// The session engine owns all timing; this bridge only projects it onto the
+/// display currently under the mouse.
 @MainActor
 final class MicroBreakPanelController: NSObject {
-    static let defaultSize = CGSize(width: 380, height: 280)
+    static let defaultSize = CGSize(width: 400, height: 300)
 
+    private let presentation = MicroBreakPresentation()
     private var panel: NSPanel?
-    private var presentation: MicroBreakPresentation?
-    private var skipHandler: (@MainActor () -> Void)?
+    private var primaryHandler: (@MainActor () -> Void)?
+    private var secondaryHandler: (@MainActor () -> Void)?
     private var presentationGeneration = 0
+    private var autoDismissTask: Task<Void, Never>?
 
     var isVisible: Bool { panel?.isVisible == true }
 
@@ -47,83 +58,126 @@ final class MicroBreakPanelController: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
 
-    /// Presents arbitrary SwiftUI content. A standard skip action can be appended by the bridge.
-    func show(
-        content: AnyView,
-        size: CGSize = defaultSize,
-        showsStandardSkipButton: Bool = false,
-        onSkip: @escaping @MainActor () -> Void
-    ) {
-        presentation = nil
-        skipHandler = onSkip
-
-        let rootView: AnyView
-        if showsStandardSkipButton {
-            rootView = AnyView(
-                StandardPanelWrapper(content: content) { [weak self] in
-                    self?.skip()
-                }
-            )
-        } else {
-            rootView = content
-        }
-
-        present(rootView: rootView, size: size)
-    }
-
-    /// Presents Xike's built-in micro-break UI. Update its number from the external session engine.
     func showMicroBreak(
+        isShowingCountdown: Bool,
         remainingSeconds: Int,
-        title: String = "休息一下",
-        message: String = "放松肩颈，望向远处，慢慢呼吸。",
         onSkip: @escaping @MainActor () -> Void
     ) {
-        let presentation = MicroBreakPresentation(
-            remainingSeconds: max(remainingSeconds, 0),
-            title: title,
-            message: message
-        )
-        self.presentation = presentation
-        skipHandler = onSkip
+        autoDismissTask?.cancel()
+        autoDismissTask = nil
+        primaryHandler = onSkip
+        secondaryHandler = nil
+        presentation.kind = .microBreak
+        presentation.isShowingCountdown = isShowingCountdown
+        presentation.remainingSeconds = max(remainingSeconds, 0)
+        presentation.title = "短休息开始"
+        presentation.message = "请暂时离开屏幕，让眼睛和肩颈放松一下。"
+        presentation.primaryButtonTitle = "跳过"
+        presentation.secondaryButtonTitle = nil
+        showPanel()
+    }
 
-        let view = MicroBreakPanelView(presentation: presentation) { [weak self] in
-            self?.skip()
+    /// Announces a long break without changing the long-break timer itself.
+    func showLongBreak(duration: Duration = .seconds(5)) {
+        autoDismissTask?.cancel()
+        primaryHandler = nil
+        secondaryHandler = nil
+        presentation.kind = .longBreakStart
+        presentation.isShowingCountdown = false
+        presentation.remainingSeconds = 0
+        presentation.title = "长休息开始"
+        presentation.message = "离开屏幕，好好恢复。"
+        presentation.primaryButtonTitle = nil
+        presentation.secondaryButtonTitle = nil
+        showPanel()
+
+        autoDismissTask = Task { @MainActor [weak self] in
+            do {
+                try await Task.sleep(for: duration)
+            } catch {
+                return
+            }
+            self?.dismiss()
         }
-        present(rootView: AnyView(view), size: Self.defaultSize)
     }
 
-    /// Presentation-only update; it does not advance or complete the session.
-    func updateMicroBreak(
-        remainingSeconds: Int,
-        title: String? = nil,
-        message: String? = nil
+    /// Keeps the completion decision visible until the user explicitly starts
+    /// the next focus cycle or ends this one.
+    func showLongBreakCompletion(
+        onStartNextFocus: @escaping @MainActor () -> Void,
+        onEndFocus: @escaping @MainActor () -> Void
     ) {
-        presentation?.remainingSeconds = max(remainingSeconds, 0)
-        if let title { presentation?.title = title }
-        if let message { presentation?.message = message }
+        autoDismissTask?.cancel()
+        autoDismissTask = nil
+        primaryHandler = onStartNextFocus
+        secondaryHandler = onEndFocus
+        presentation.kind = .longBreakComplete
+        presentation.isShowingCountdown = false
+        presentation.remainingSeconds = 0
+        presentation.title = "长休息结束"
+        presentation.message = "恢复得怎么样？由你决定下一步。"
+        presentation.primaryButtonTitle = "开始下一次专注"
+        presentation.secondaryButtonTitle = "结束专注"
+        showPanel()
     }
 
-    func skip() {
-        guard isVisible, let handler = skipHandler else { return }
+    private func showPanel() {
+        let panel = ensurePanel()
+        presentationGeneration += 1
+        let shouldAnimateIn = !panel.isVisible && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        panel.alphaValue = shouldAnimateIn ? 0 : 1
+        center(panel, on: preferredScreen())
+        panel.orderFrontRegardless()
+        if shouldAnimateIn {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.24
+                panel.animator().alphaValue = 1
+            }
+        }
+
+        // Reasserting order on the next run loop fixes the race where a Space
+        // switch or full-screen app claims frontmost status at the same moment.
+        DispatchQueue.main.async { [weak self, weak panel] in
+            guard let self, let panel, panel.isVisible else { return }
+            self.center(panel, on: self.preferredScreen())
+            panel.orderFrontRegardless()
+        }
+    }
+
+    /// Presentation-only update; it never advances or completes the session.
+    func updateMicroBreak(isShowingCountdown: Bool, remainingSeconds: Int) {
+        presentation.isShowingCountdown = isShowingCountdown
+        presentation.remainingSeconds = max(remainingSeconds, 0)
+    }
+
+    func performPrimaryAction() {
+        guard isVisible, let handler = primaryHandler else { return }
+        dismiss()
+        handler()
+    }
+
+    func performSecondaryAction() {
+        guard isVisible, let handler = secondaryHandler else { return }
         dismiss()
         handler()
     }
 
     func dismiss(animated: Bool = true) {
+        autoDismissTask?.cancel()
+        autoDismissTask = nil
         guard let panel else {
-            skipHandler = nil
-            presentation = nil
+            primaryHandler = nil
+            secondaryHandler = nil
             return
         }
 
-        skipHandler = nil
-        presentation = nil
+        primaryHandler = nil
+        secondaryHandler = nil
         presentationGeneration += 1
         let dismissGeneration = presentationGeneration
-
         if animated, !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
             NSAnimationContext.runAnimationGroup { context in
-                context.duration = 0.16
+                context.duration = 0.20
                 panel.animator().alphaValue = 0
             } completionHandler: { [weak self] in
                 Task { @MainActor in
@@ -136,7 +190,6 @@ final class MicroBreakPanelController: NSObject {
         }
     }
 
-    /// Re-centers an already visible panel after a display arrangement change.
     func recenter() {
         guard let panel, panel.isVisible else { return }
         center(panel, on: preferredScreen())
@@ -146,18 +199,20 @@ final class MicroBreakPanelController: NSObject {
         recenter()
     }
 
-    private func present(rootView: AnyView, size: CGSize) {
-        let panel = panel ?? makePanel()
-        self.panel = panel
-        presentationGeneration += 1
-
-        let hostingView = NSHostingView(rootView: rootView)
-        hostingView.frame = CGRect(origin: .zero, size: size)
+    private func ensurePanel() -> NSPanel {
+        if let panel { return panel }
+        let panel = makePanel()
+        let view = MicroBreakPanelView(
+            presentation: presentation,
+            onPrimaryAction: { [weak self] in self?.performPrimaryAction() },
+            onSecondaryAction: { [weak self] in self?.performSecondaryAction() }
+        )
+        let hostingView = FirstMouseHostingView(rootView: AnyView(view))
+        hostingView.frame = CGRect(origin: .zero, size: Self.defaultSize)
         panel.contentView = hostingView
-        panel.setContentSize(size)
-        center(panel, on: preferredScreen())
-        panel.alphaValue = 1
-        panel.orderFrontRegardless()
+        panel.setContentSize(Self.defaultSize)
+        self.panel = panel
+        return panel
     }
 
     private func makePanel() -> NSPanel {
@@ -168,12 +223,7 @@ final class MicroBreakPanelController: NSObject {
             defer: false
         )
         panel.level = .statusBar
-        panel.collectionBehavior = [
-            .canJoinAllSpaces,
-            .fullScreenAuxiliary,
-            .stationary,
-            .ignoresCycle,
-        ]
+        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
         panel.animationBehavior = .utilityWindow
         panel.backgroundColor = .clear
         panel.isOpaque = false
@@ -183,7 +233,7 @@ final class MicroBreakPanelController: NSObject {
         panel.isReleasedWhenClosed = false
         panel.becomesKeyOnlyIfNeeded = true
         panel.ignoresMouseEvents = false
-        panel.setAccessibilityLabel("微休息")
+        panel.setAccessibilityLabel("短休息")
         return panel
     }
 
@@ -203,87 +253,111 @@ final class MicroBreakPanelController: NSObject {
 
     private func center(_ panel: NSPanel, on screen: NSScreen?) {
         guard let screen else { return }
-        let targetFrame = screen.visibleFrame
-        let origin = CGPoint(
-            x: targetFrame.midX - panel.frame.width / 2,
-            y: targetFrame.midY - panel.frame.height / 2
-        )
-        panel.setFrameOrigin(origin)
-    }
-}
-
-private struct StandardPanelWrapper: View {
-    let content: AnyView
-    let onSkip: () -> Void
-
-    var body: some View {
-        VStack(spacing: 14) {
-            content
-            Button("跳过", action: onSkip)
-                .buttonStyle(.plain)
-                .foregroundStyle(.secondary)
-                .accessibilityHint("立即结束本次微休息")
-        }
-        .padding(20)
+        let frame = screen.visibleFrame
+        panel.setFrameOrigin(CGPoint(x: frame.midX - panel.frame.width / 2, y: frame.midY - panel.frame.height / 2))
     }
 }
 
 private struct MicroBreakPanelView: View {
     @ObservedObject var presentation: MicroBreakPresentation
-    let onSkip: () -> Void
+    let onPrimaryAction: () -> Void
+    let onSecondaryAction: () -> Void
 
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Namespace private var glassNamespace
 
     var body: some View {
         GlassEffectContainer(spacing: 16) {
-            surface
+            VStack(spacing: 16) {
+                Image(systemName: symbolName)
+                    .font(.system(size: 28, weight: .medium))
+                    .foregroundStyle(symbolColor)
+
+                Text(displayTitle)
+                    .font(.title2.weight(.semibold))
+
+                if presentation.isShowingCountdown {
+                    Text("\(presentation.remainingSeconds)")
+                        .font(.system(size: 68, weight: .light, design: .rounded))
+                        .monospacedDigit()
+                        .contentTransition(reduceMotion ? .identity : .numericText())
+                        .accessibilityLabel("剩余 \(presentation.remainingSeconds) 秒")
+                }
+
+                Text(presentation.message)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+
+                if let primaryButtonTitle = presentation.primaryButtonTitle {
+                    HStack(spacing: 10) {
+                        if let secondaryButtonTitle = presentation.secondaryButtonTitle {
+                            Button(secondaryButtonTitle, action: onSecondaryAction)
+                                .buttonStyle(.glass)
+                        }
+                        if presentation.kind == .longBreakComplete {
+                            Button(primaryButtonTitle, action: onPrimaryAction)
+                                .buttonStyle(.glassProminent)
+                                .tint(.accentColor)
+                        } else {
+                            Button(primaryButtonTitle, action: onPrimaryAction)
+                                .buttonStyle(.glass)
+                        }
+                    }
+                    .controlSize(.regular)
+                    .accessibilityHint(buttonAccessibilityHint)
+                }
+            }
+            .padding(.horizontal, 28)
+            .padding(.vertical, 22)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .opacity(1)
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: presentation.isShowingCountdown)
+            .background {
+                if reduceTransparency {
+                    RoundedRectangle(cornerRadius: 28, style: .continuous)
+                        .fill(Color(nsColor: .windowBackgroundColor))
+                }
+            }
+            .glassEffect(reduceTransparency ? .identity : .regular, in: .rect(cornerRadius: 28))
         }
         .padding(12)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityElement(children: .contain)
+        .accessibilityLabel(accessibilityTitle)
     }
 
-    private var surface: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "eye")
-                .font(.system(size: 26, weight: .medium))
-                .foregroundStyle(.secondary)
+    private var displayTitle: String {
+        presentation.isShowingCountdown ? "短休息" : presentation.title
+    }
 
-            Text(presentation.title)
-                .font(.title2.weight(.semibold))
-
-            Text("\(presentation.remainingSeconds)")
-                .font(.system(size: 64, weight: .light, design: .rounded))
-                .monospacedDigit()
-                .contentTransition(reduceMotion ? .identity : .numericText())
-                .accessibilityLabel("剩余 \(presentation.remainingSeconds) 秒")
-
-            Text(presentation.message)
-                .font(.callout)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-
-            Button("跳过", action: onSkip)
-                .buttonStyle(.plain)
-                .font(.callout)
-                .foregroundStyle(.secondary)
-                .accessibilityHint("立即结束本次微休息")
+    private var symbolName: String {
+        switch presentation.kind {
+        case .microBreak: presentation.isShowingCountdown ? "wind" : "sparkles"
+        case .longBreakStart: "cup.and.saucer.fill"
+        case .longBreakComplete: "checkmark.circle.fill"
         }
-        .padding(.horizontal, 28)
-        .padding(.vertical, 22)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background {
-            if reduceTransparency {
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .fill(Color(nsColor: .windowBackgroundColor))
-            }
+    }
+
+    private var symbolColor: Color {
+        switch presentation.kind {
+        case .microBreak: presentation.isShowingCountdown ? .mint : .accentColor
+        case .longBreakStart: .cyan
+        case .longBreakComplete: .green
         }
-        .glassEffect(
-            reduceTransparency ? .identity : .regular,
-            in: .rect(cornerRadius: 28)
-        )
-        .glassEffectID("micro-break", in: glassNamespace)
+    }
+
+    private var accessibilityTitle: String {
+        switch presentation.kind {
+        case .microBreak: presentation.isShowingCountdown ? "短休息倒计时" : "短休息开始"
+        case .longBreakStart: "长休息开始"
+        case .longBreakComplete: "长休息结束，请决定下一步"
+        }
+    }
+
+    private var buttonAccessibilityHint: String {
+        presentation.kind == .longBreakComplete
+            ? "选择开始下一次专注或结束专注"
+            : "立即结束本次短休息"
     }
 }

@@ -14,6 +14,7 @@ public final class SessionEngine {
     public private(set) var startedAt: Date?
     public private(set) var focusDeadline: Date?
     public private(set) var phaseDeadline: Date?
+    public private(set) var microBreakIntroDeadline: Date?
     public private(set) var nextPromptAt: Date?
     public private(set) var pausedAt: Date?
     public private(set) var accumulatedPausedDuration: TimeInterval = 0
@@ -62,6 +63,22 @@ public final class SessionEngine {
     /// Remaining time for the phase currently presented to the user.
     public var remainingTime: TimeInterval {
         remainingTime(at: nowProvider())
+    }
+
+    public func isMicroBreakIntro(at date: Date? = nil) -> Bool {
+        guard phase == .microBreak, let microBreakIntroDeadline else { return false }
+        let reference = isPaused ? pausedAt ?? date ?? nowProvider() : date ?? nowProvider()
+        return reference < microBreakIntroDeadline
+    }
+
+    /// Countdown-only time: it stays at the configured duration while the
+    /// 1.5-second introductory message is visible.
+    public func microBreakCountdownRemaining(at date: Date? = nil) -> TimeInterval {
+        guard phase == .microBreak, let phaseDeadline else { return 0 }
+        let requestedDate = date ?? nowProvider()
+        let reference = isPaused ? pausedAt ?? requestedDate : requestedDate
+        let countdownStart = microBreakIntroDeadline ?? phaseDeadline.addingTimeInterval(-configuration.microBreakDuration)
+        return max(0, phaseDeadline.timeIntervalSince(max(reference, countdownStart)))
     }
 
     /// Remaining time until the end of the focus interval. Micro-break time is
@@ -134,6 +151,7 @@ public final class SessionEngine {
             focusDeadline = focusDeadline?.addingTimeInterval(pausedDuration)
         }
         phaseDeadline = phaseDeadline?.addingTimeInterval(pausedDuration)
+        microBreakIntroDeadline = microBreakIntroDeadline?.addingTimeInterval(pausedDuration)
         nextPromptAt = nextPromptAt?.addingTimeInterval(pausedDuration)
         accumulatedPausedDuration += pausedDuration
         self.pausedAt = nil
@@ -162,7 +180,7 @@ public final class SessionEngine {
                 if let nextPromptAt, currentDate >= nextPromptAt {
                     // The sound is heard now, so a delayed prompt only starts if
                     // a complete micro-break still fits before focus ends.
-                    guard currentDate.addingTimeInterval(configuration.microBreakDuration) <= focusDeadline else {
+                    guard currentDate.addingTimeInterval(configuration.microBreakPresentationDuration) <= focusDeadline else {
                         self.nextPromptAt = nil
                         return
                     }
@@ -205,7 +223,7 @@ public final class SessionEngine {
         guard phase == .focusing, !isPaused, let focusDeadline else { return false }
         let triggerDate = date ?? nowProvider()
         guard triggerDate < focusDeadline,
-              triggerDate.addingTimeInterval(configuration.microBreakDuration) <= focusDeadline
+              triggerDate.addingTimeInterval(configuration.microBreakPresentationDuration) <= focusDeadline
         else {
             nextPromptAt = nil
             return false
@@ -234,6 +252,7 @@ public final class SessionEngine {
 
         phase = .focusing
         phaseDeadline = nil
+        microBreakIntroDeadline = nil
         scheduleNextPrompt(from: completionDate)
         emit(event)
         if completionDate == focusDeadline {
@@ -245,6 +264,18 @@ public final class SessionEngine {
     @discardableResult
     public func skipMicroBreak(at date: Date? = nil) -> Bool {
         completeMicroBreak(skipped: true, at: date)
+    }
+
+    /// Finishes a completed focus cycle without waiting for the optional long
+    /// break. The cycle remains in its explicit waiting state and never starts
+    /// another focus interval automatically.
+    @discardableResult
+    public func skipLongBreak(at date: Date? = nil) -> Bool {
+        // Focus has already completed, so ending its optional recovery phase is
+        // valid even if the user paused during that phase.
+        guard phase == .longBreak else { return false }
+        completeLongBreak(at: date ?? nowProvider(), skipped: true)
+        return true
     }
 
     /// Ends a running cycle and returns the immutable value that should be
@@ -284,6 +315,7 @@ public final class SessionEngine {
             startedAt: startedAt,
             focusDeadline: focusDeadline,
             phaseDeadline: phaseDeadline,
+            microBreakIntroDeadline: microBreakIntroDeadline,
             nextPromptAt: nextPromptAt,
             pausedAt: pausedAt,
             accumulatedPausedDuration: accumulatedPausedDuration,
@@ -320,6 +352,7 @@ public final class SessionEngine {
         startedAt = snapshot.startedAt
         focusDeadline = snapshot.focusDeadline
         phaseDeadline = snapshot.phaseDeadline
+        microBreakIntroDeadline = snapshot.microBreakIntroDeadline
         nextPromptAt = snapshot.nextPromptAt
         accumulatedPausedDuration = snapshot.accumulatedPausedDuration
         focusCompletedAt = snapshot.focusCompletedAt
@@ -351,7 +384,7 @@ public final class SessionEngine {
         let generatedInterval = randomIntervalProvider(range)
         let safeInterval = min(max(generatedInterval, range.lowerBound), range.upperBound)
         let candidate = date.addingTimeInterval(safeInterval)
-        nextPromptAt = candidate.addingTimeInterval(configuration.microBreakDuration) <= focusDeadline
+        nextPromptAt = candidate.addingTimeInterval(configuration.microBreakPresentationDuration) <= focusDeadline
             ? candidate
             : nil
     }
@@ -359,7 +392,8 @@ public final class SessionEngine {
     private func beginMicroBreak(at date: Date) {
         phase = .microBreak
         nextPromptAt = nil
-        phaseDeadline = date.addingTimeInterval(configuration.microBreakDuration)
+        microBreakIntroDeadline = date.addingTimeInterval(FocusConfiguration.microBreakIntroDuration)
+        phaseDeadline = microBreakIntroDeadline!.addingTimeInterval(configuration.microBreakDuration)
         microBreaksTriggered += 1
         emit(.microBreakStarted(at: date, deadline: phaseDeadline!))
     }
@@ -376,18 +410,18 @@ public final class SessionEngine {
         emit(.longBreakStarted(at: focusEndDate, deadline: phaseDeadline!))
     }
 
-    private func completeLongBreak(at date: Date) {
+    private func completeLongBreak(at date: Date, skipped: Bool = false) {
         guard let startedAt else { return }
         let record = makeRecord(
             startedAt: startedAt,
             endedAt: date,
             outcome: .completed,
-            longBreakCompleted: true
+            longBreakCompleted: !skipped
         )
         lastRecord = record
         phase = .awaitingNextCycle
         clearActiveState(keepingLastRecord: true)
-        emit(.longBreakCompleted(at: date))
+        emit(skipped ? .longBreakSkipped(at: date) : .longBreakCompleted(at: date))
         emit(.sessionEnded(record))
     }
 
@@ -444,6 +478,7 @@ public final class SessionEngine {
         startedAt = nil
         focusDeadline = nil
         phaseDeadline = nil
+        microBreakIntroDeadline = nil
         nextPromptAt = nil
         pausedAt = nil
         accumulatedPausedDuration = 0
@@ -460,6 +495,7 @@ public final class SessionEngine {
         startedAt = nil
         focusDeadline = nil
         phaseDeadline = nil
+        microBreakIntroDeadline = nil
         nextPromptAt = nil
         pausedAt = nil
         accumulatedPausedDuration = 0
