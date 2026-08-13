@@ -1,4 +1,5 @@
 import AppKit
+import AppIntents
 import SwiftUI
 
 @MainActor
@@ -77,8 +78,22 @@ struct XikeApp: App {
                 }
                 .keyboardShortcut("l", modifiers: [.command, .shift])
                 .disabled(store.engine.phase != .longBreak || store.engine.isPaused)
+
+                Divider()
+                OpenWindowCommandButton(title: "打开任务", systemImage: "checklist", windowID: "tasks", shortcut: "t")
+                OpenWindowCommandButton(title: "打开专注记录", systemImage: "clock.arrow.circlepath", windowID: "history", shortcut: "h")
             }
         }
+
+        Window("任务", id: "tasks") {
+            TasksView(store: store)
+        }
+        .defaultSize(width: 900, height: 620)
+
+        Window("专注记录", id: "history") {
+            HistoryView(store: store)
+        }
+        .defaultSize(width: 780, height: 560)
 
         MenuBarExtra {
             MenuBarView(store: store)
@@ -90,6 +105,9 @@ struct XikeApp: App {
 
         Settings {
             SettingsView(store: store)
+        }
+        .onChange(of: store.preferences.configuration) { _, _ in
+            XikeFocusFilterIntent.invalidateFocusFilterAppContext()
         }
     }
 
@@ -115,5 +133,21 @@ struct XikeApp: App {
         } else if store.engine.canStart {
             _ = store.startSession()
         }
+    }
+}
+
+private struct OpenWindowCommandButton: View {
+    let title: String
+    let systemImage: String
+    let windowID: String
+    let shortcut: KeyEquivalent
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Button(title, systemImage: systemImage) {
+            openWindow(id: windowID)
+            NSApp.activate(ignoringOtherApps: true)
+        }
+        .keyboardShortcut(shortcut, modifiers: [.command, .shift])
     }
 }

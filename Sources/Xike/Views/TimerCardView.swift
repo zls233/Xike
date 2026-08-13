@@ -4,36 +4,20 @@ struct TimerCardView: View {
     @Bindable var store: AppStore
 
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    private var displayedTime: TimeInterval {
-        switch store.engine.phase {
-        case .idle:
-            store.preferences.configuration.focusDuration
-        case .awaitingNextCycle:
-            0
-        case .microBreak:
-            store.engine.microBreakCountdownRemaining(at: store.displayDate)
-        case .focusing, .longBreak:
-            store.remainingTime
-        }
-    }
 
     var body: some View {
         VStack(spacing: 24) {
             phaseHeader
-            timer
+            focusContextEditor
+            SessionTimerDial(store: store)
             controls
         }
         .padding(34)
         .frame(maxWidth: .infinity, minHeight: 430)
         .background {
-            if reduceTransparency {
-                RoundedRectangle(cornerRadius: 34, style: .continuous)
-                    .fill(.background)
-            }
+            RoundedRectangle(cornerRadius: 34, style: .continuous)
+                .fill(reduceTransparency ? AnyShapeStyle(.background) : AnyShapeStyle(.regularMaterial))
         }
-        .glassEffect(reduceTransparency ? .identity : .regular, in: .rect(cornerRadius: 34))
         .confirmationDialog(
             "结束当前这一轮？",
             isPresented: $store.showEndConfirmation
@@ -47,6 +31,38 @@ struct TimerCardView: View {
         }
     }
 
+    @ViewBuilder
+    private var focusContextEditor: some View {
+        if store.engine.canStart {
+            VStack(spacing: 10) {
+                Picker("专注任务", selection: $store.selectedTaskID) {
+                    Text("不绑定任务").tag(UUID?.none)
+                    ForEach(store.tasks.activeTasks) { task in
+                        Text(task.title).tag(Optional(task.id))
+                    }
+                }
+                .labelsHidden()
+                .frame(maxWidth: 360)
+                TextField("本轮目标（可选）", text: $store.focusGoal)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(maxWidth: 360)
+            }
+        } else if let context = store.engine.focusContext {
+            VStack(spacing: 7) {
+                if let title = context.taskTitleSnapshot ?? context.goal {
+                    Label(title, systemImage: "scope")
+                        .font(.callout.weight(.medium))
+                }
+                TextField("写下一句复盘（可选）", text: Binding(
+                    get: { store.reflection },
+                    set: { store.updateCurrentReflection($0) }
+                ))
+                .textFieldStyle(.roundedBorder)
+                .frame(maxWidth: 360)
+            }
+        }
+    }
+
     private var phaseHeader: some View {
         VStack(spacing: 9) {
             Label(store.phaseTitle, systemImage: store.statusSystemImage)
@@ -56,40 +72,6 @@ struct TimerCardView: View {
                 .font(.callout)
                 .foregroundStyle(.secondary)
         }
-    }
-
-    private var timer: some View {
-        ZStack {
-            Circle()
-                .stroke(.secondary.opacity(0.12), lineWidth: 8)
-            Circle()
-                .trim(from: 0, to: store.phaseProgress)
-                .stroke(
-                    progressColor,
-                    style: StrokeStyle(lineWidth: 8, lineCap: .round)
-                )
-                .rotationEffect(.degrees(-90))
-                .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: store.phaseProgress)
-
-            VStack(spacing: 7) {
-                Text(TimeDisplay.clock(displayedTime))
-                    .font(.system(size: 62, weight: .light, design: .rounded))
-                    .monospacedDigit()
-                    .contentTransition(reduceMotion ? .identity : .numericText(countsDown: true))
-                    .accessibilityLabel(TimeDisplay.accessibilityDuration(displayedTime))
-
-                if store.engine.phase == .microBreak {
-                    Text(store.isMicroBreakIntro ? "短休息即将开始" : "第 \(store.engine.microBreaksTriggered) 次短休息")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                } else if store.engine.phase == .focusing {
-                    Text("已完成 \(store.engine.microBreaksCompleted) 次短休息")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-        }
-        .frame(width: 228, height: 228)
     }
 
     private var controls: some View {
@@ -135,6 +117,60 @@ struct TimerCardView: View {
             .buttonStyle(.glassProminent)
             .tint(.accentColor)
         }
+    }
+}
+
+/// Keeps the one-second clock invalidation inside a fixed-size drawing region.
+/// The surrounding card, controls, and responsive dashboard do not need to be
+/// measured again merely because the displayed second changed.
+private struct SessionTimerDial: View {
+    @Bindable var store: AppStore
+
+    private var displayedTime: TimeInterval {
+        switch store.engine.phase {
+        case .idle:
+            store.preferences.configuration.focusDuration
+        case .awaitingNextCycle:
+            0
+        case .microBreak:
+            store.engine.microBreakCountdownRemaining(at: store.displayDate)
+        case .focusing, .longBreak:
+            store.remainingTime
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(.secondary.opacity(0.12), lineWidth: 8)
+            Circle()
+                .trim(from: 0, to: store.phaseProgress)
+                .stroke(
+                    progressColor,
+                    style: StrokeStyle(lineWidth: 8, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+
+            VStack(spacing: 7) {
+                Text(TimeDisplay.clock(displayedTime))
+                    .font(.system(size: 62, weight: .light, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .frame(width: 190)
+                    .accessibilityLabel(TimeDisplay.accessibilityDuration(displayedTime))
+
+                if store.engine.phase == .microBreak {
+                    Text(store.isMicroBreakIntro ? "短休息即将开始" : "第 \(store.engine.microBreaksTriggered) 次短休息")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                } else if store.engine.phase == .focusing {
+                    Text("已完成 \(store.engine.microBreaksCompleted) 次短休息")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+        }
+        .frame(width: 228, height: 228)
     }
 
     private var progressColor: Color {

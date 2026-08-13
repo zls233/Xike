@@ -1,18 +1,21 @@
-import AppKit
 import SwiftUI
 
 struct ContentView: View {
     @Bindable var store: AppStore
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         Group {
             if store.preferences.hasCompletedOnboarding {
-                dashboard
+                DashboardView(store: store)
             } else {
                 OnboardingView(store: store)
             }
         }
         .task { store.start() }
+        .onReceive(NotificationCenter.default.publisher(for: .openXikeWindow)) { notification in
+            if let id = notification.object as? String { openWindow(id: id) }
+        }
         .alert(
             "恢复上次专注？",
             isPresented: Binding(
@@ -42,76 +45,4 @@ struct ContentView: View {
         }
     }
 
-    private var dashboard: some View {
-        ScrollView {
-            GlassEffectContainer(spacing: 22) {
-                VStack(spacing: 18) {
-                    if store.shouldOfferResume {
-                        resumeBanner
-                    }
-
-                    HStack(alignment: .top, spacing: 22) {
-                        TimerCardView(store: store)
-                            .frame(maxWidth: .infinity)
-                        StatisticsView(store: store)
-                            .frame(width: 330)
-                    }
-                }
-            }
-            .padding(28)
-        }
-        .background {
-            LinearGradient(
-                colors: [Color.accentColor.opacity(0.10), .clear, Color.cyan.opacity(0.055)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-            .accessibilityHidden(true)
-        }
-        .frame(minWidth: 860, minHeight: 620)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                SettingsLink {
-                    Label("设置", systemImage: "gearshape")
-                }
-            }
-        }
-    }
-
-    private var resumeBanner: some View {
-        HStack(spacing: 14) {
-            Image(systemName: "pause.circle.fill")
-                .font(.title2)
-                .foregroundStyle(.orange)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("专注已安全暂停")
-                    .font(.headline)
-                Text("睡眠、锁屏或离线时间没有计入本轮。")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            Button("结束本轮", role: .destructive) {
-                store.endSession()
-            }
-            .buttonStyle(.glass)
-            Button("继续") {
-                store.resumeSession()
-            }
-            .buttonStyle(.glassProminent)
-            .tint(.accentColor)
-        }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 14)
-        .background {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color(nsColor: NSColor.windowBackgroundColor))
-                .opacity(NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency ? 1 : 0)
-        }
-        .glassEffect(
-            NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency ? .identity : .regular,
-            in: .rect(cornerRadius: 20)
-        )
-    }
 }

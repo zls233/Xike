@@ -41,6 +41,7 @@ public struct SessionRecordValue: Identifiable, Codable, Equatable, Sendable {
     public var microBreaksCompleted: Int
     public var microBreaksSkipped: Int
     public var longBreakCompleted: Bool
+    public var focusContext: FocusContext?
 
     public init(
         id: UUID = UUID(),
@@ -52,7 +53,8 @@ public struct SessionRecordValue: Identifiable, Codable, Equatable, Sendable {
         microBreaksTriggered: Int,
         microBreaksCompleted: Int,
         microBreaksSkipped: Int,
-        longBreakCompleted: Bool
+        longBreakCompleted: Bool,
+        focusContext: FocusContext? = nil
     ) {
         self.id = id
         self.startedAt = startedAt
@@ -64,6 +66,7 @@ public struct SessionRecordValue: Identifiable, Codable, Equatable, Sendable {
         self.microBreaksCompleted = microBreaksCompleted
         self.microBreaksSkipped = microBreaksSkipped
         self.longBreakCompleted = longBreakCompleted
+        self.focusContext = focusContext
     }
 }
 
@@ -89,6 +92,7 @@ public struct SessionSnapshot: Codable, Equatable, Sendable {
     public var microBreaksTriggered: Int
     public var microBreaksCompleted: Int
     public var microBreaksSkipped: Int
+    public var focusContext: FocusContext?
 
     public init(
         version: Int = SessionSnapshot.currentVersion,
@@ -107,7 +111,8 @@ public struct SessionSnapshot: Codable, Equatable, Sendable {
         focusCompletedAt: Date?,
         microBreaksTriggered: Int,
         microBreaksCompleted: Int,
-        microBreaksSkipped: Int
+        microBreaksSkipped: Int,
+        focusContext: FocusContext? = nil
     ) {
         self.version = version
         self.capturedAt = capturedAt
@@ -126,6 +131,7 @@ public struct SessionSnapshot: Codable, Equatable, Sendable {
         self.microBreaksTriggered = microBreaksTriggered
         self.microBreaksCompleted = microBreaksCompleted
         self.microBreaksSkipped = microBreaksSkipped
+        self.focusContext = focusContext
     }
 }
 

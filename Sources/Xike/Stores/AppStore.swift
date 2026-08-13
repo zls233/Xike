@@ -9,12 +9,15 @@ final class AppStore {
 
     let preferences: PreferencesStore
     let history: HistoryStore
+    let tasks: TaskStore
     let engine: SessionEngine
     let soundService: SoundService
     let notificationService: NotificationService
     let loginItemService: LoginItemService
+    let globalHotKeyService: GlobalHotKeyService
 
     private(set) var displayDate = Date()
+    private(set) var statisticsDate = Date()
     private(set) var recoverySnapshot: SessionSnapshot?
     private(set) var shouldOfferResume = false
     private(set) var notificationPermission: NotificationPermissionState = .notDetermined
@@ -22,6 +25,9 @@ final class AppStore {
     var alertMessage: String?
     var showEndConfirmation = false
     var showHistoryClearConfirmation = false
+    var selectedTaskID: UUID?
+    var focusGoal = ""
+    var reflection = ""
 
     @ObservationIgnored private let snapshotStore: SnapshotStore
     @ObservationIgnored private let workspaceMonitor: WorkspaceActivityMonitor
@@ -33,20 +39,24 @@ final class AppStore {
     init(
         preferences: PreferencesStore = PreferencesStore(),
         history: HistoryStore = HistoryStore(),
+        tasks: TaskStore = TaskStore(),
         engine: SessionEngine? = nil,
         soundService: SoundService = SoundService(),
         notificationService: NotificationService = NotificationService(),
         loginItemService: LoginItemService = LoginItemService(),
+        globalHotKeyService: GlobalHotKeyService = GlobalHotKeyService(),
         snapshotStore: SnapshotStore = SnapshotStore(),
         workspaceMonitor: WorkspaceActivityMonitor = WorkspaceActivityMonitor(),
         microBreakPanel: MicroBreakPanelController = MicroBreakPanelController()
     ) {
         self.preferences = preferences
         self.history = history
+        self.tasks = tasks
         self.engine = engine ?? SessionEngine(configuration: preferences.configuration)
         self.soundService = soundService
         self.notificationService = notificationService
         self.loginItemService = loginItemService
+        self.globalHotKeyService = globalHotKeyService
         self.snapshotStore = snapshotStore
         self.workspaceMonitor = workspaceMonitor
         self.microBreakPanel = microBreakPanel
@@ -64,7 +74,29 @@ final class AppStore {
     }
 
     var remainingTime: TimeInterval {
-        engine.remainingTime(at: displayDate)
+        let rawValue = engine.remainingTime(at: displayDate)
+        return Self.cappedRemainingTime(
+            rawValue,
+            phase: engine.phase,
+            configuration: engine.configuration
+        )
+    }
+
+    nonisolated static func cappedRemainingTime(
+        _ rawValue: TimeInterval,
+        phase: SessionPhase,
+        configuration: FocusConfiguration
+    ) -> TimeInterval {
+        switch phase {
+        case .focusing:
+            return min(rawValue, configuration.focusDuration)
+        case .microBreak:
+            return min(rawValue, configuration.microBreakPresentationDuration)
+        case .longBreak:
+            return min(rawValue, configuration.longBreakDuration)
+        case .idle, .awaitingNextCycle:
+            return rawValue
+        }
     }
 
     var focusProgress: Double {
@@ -129,10 +161,12 @@ final class AppStore {
     func start() {
         guard tickerTask == nil else { return }
         workspaceMonitor.start()
+        refreshGlobalShortcut()
+        refreshBreakOverlayPreferences()
         loginItemState = loginItemService.state
         tickerTask = Task { [weak self] in
             while !Task.isCancelled {
-                try? await Task.sleep(for: .milliseconds(250))
+                try? await Task.sleep(for: .seconds(1))
                 guard let self else { return }
                 self.advanceClock()
             }
@@ -148,20 +182,40 @@ final class AppStore {
         tickerTask?.cancel()
         tickerTask = nil
         workspaceMonitor.stop()
+        globalHotKeyService.unregister()
         soundService.stop()
         microBreakPanel.dismiss(animated: false)
     }
 
     @discardableResult
-    func startSession() -> Bool {
+    func startSession(taskID: UUID? = nil, goal: String? = nil) -> Bool {
         microBreakPanel.dismiss()
         recoverySnapshot = nil
         shouldOfferResume = false
         snapshotStore.clear()
         engine.configuration = preferences.configuration
-        let started = engine.start()
+        let resolvedTaskID = taskID ?? selectedTaskID
+        let selectedTask = tasks.task(id: resolvedTaskID)
+        let resolvedGoal = goal ?? focusGoal
+        let context = FocusContext(
+            taskID: selectedTask?.id,
+            taskTitleSnapshot: selectedTask?.title,
+            goal: resolvedGoal,
+            reflection: reflection
+        )
+        let startDate = Date()
+        displayDate = startDate
+        let started = engine.start(context: context, at: startDate)
         persistSnapshot(force: true)
         return started
+    }
+
+    func updateCurrentReflection(_ value: String) {
+        reflection = value
+        guard var context = engine.focusContext else { return }
+        context.reflection = value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : value
+        engine.updateFocusContext(context)
+        persistSnapshot(force: true)
     }
 
     func pauseSession() {
@@ -215,6 +269,9 @@ final class AppStore {
             return
         }
         recoverySnapshot = nil
+        selectedTaskID = engine.focusContext?.taskID
+        focusGoal = engine.focusContext?.goal ?? ""
+        reflection = engine.focusContext?.reflection ?? ""
         shouldOfferResume = true
         persistSnapshot(force: true)
     }
@@ -228,6 +285,7 @@ final class AppStore {
     func resetCompletedCycle() {
         microBreakPanel.dismiss()
         engine.resetToIdle()
+        reflection = ""
     }
 
     func previewSound(_ soundID: String) {
@@ -273,8 +331,40 @@ final class AppStore {
         alertMessage = nil
     }
 
+    func refreshGlobalShortcut() {
+        guard preferences.globalShortcutEnabled else {
+            globalHotKeyService.unregister()
+            return
+        }
+        globalHotKeyService.register(shortcut: preferences.globalShortcut) { [weak self] in
+            self?.performPrimarySessionAction()
+        }
+    }
+
+    func refreshBreakOverlayPreferences() {
+        microBreakPanel.configure(
+            isEnabled: preferences.breakOverlayEnabled,
+            position: preferences.breakOverlayPosition
+        )
+    }
+
+    func previewBreakOverlay() {
+        refreshBreakOverlayPreferences()
+        microBreakPanel.showPreview()
+    }
+
+    func performPrimarySessionAction() {
+        if engine.canPause { pauseSession() }
+        else if engine.canResume { resumeSession() }
+        else if engine.canStart { _ = startSession() }
+    }
+
     private func advanceClock() {
-        displayDate = Date()
+        let now = Date()
+        displayDate = now
+        if !Calendar.current.isDate(now, inSameDayAs: statisticsDate) {
+            statisticsDate = now
+        }
         engine.tick(at: displayDate)
         if engine.phase == .microBreak, !engine.isPaused {
             microBreakPanel.updateMicroBreak(
@@ -343,6 +433,7 @@ final class AppStore {
 
         case .sessionEnded(let record):
             history.add(record)
+            reflection = ""
             snapshotStore.clear()
 
         case .snapshotRestored:

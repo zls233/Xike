@@ -23,6 +23,7 @@ public final class SessionEngine {
     public private(set) var microBreaksCompleted = 0
     public private(set) var microBreaksSkipped = 0
     public private(set) var lastRecord: SessionRecordValue?
+    public private(set) var focusContext: FocusContext?
 
     /// The host uses this single callback to bridge state transitions to sound,
     /// notifications, persistence, and the micro-break panel.
@@ -104,7 +105,7 @@ public final class SessionEngine {
     }
 
     @discardableResult
-    public func start(at date: Date? = nil) -> Bool {
+    public func start(context: FocusContext? = nil, at date: Date? = nil) -> Bool {
         guard canStart else { return false }
 
         do {
@@ -118,6 +119,7 @@ public final class SessionEngine {
 
         let startDate = date ?? nowProvider()
         resetRuntimeState()
+        focusContext = context?.isEmpty == false ? context : nil
         phase = .focusing
         startedAt = startDate
         focusDeadline = startDate.addingTimeInterval(configuration.focusDuration)
@@ -322,7 +324,8 @@ public final class SessionEngine {
             focusCompletedAt: focusCompletedAt,
             microBreaksTriggered: microBreaksTriggered,
             microBreaksCompleted: microBreaksCompleted,
-            microBreaksSkipped: microBreaksSkipped
+            microBreaksSkipped: microBreaksSkipped,
+            focusContext: focusContext
         )
     }
 
@@ -359,6 +362,7 @@ public final class SessionEngine {
         microBreaksTriggered = snapshot.microBreaksTriggered
         microBreaksCompleted = snapshot.microBreaksCompleted
         microBreaksSkipped = snapshot.microBreaksSkipped
+        focusContext = snapshot.focusContext
         lastRecord = nil
 
         isPaused = true
@@ -373,6 +377,11 @@ public final class SessionEngine {
         guard phase == .awaitingNextCycle else { return }
         phase = .idle
         clearActiveState()
+    }
+
+    public func updateFocusContext(_ context: FocusContext?) {
+        guard phase.isRunning else { return }
+        focusContext = context?.isEmpty == false ? context : nil
     }
 
     private func scheduleNextPrompt(from date: Date) {
@@ -451,7 +460,8 @@ public final class SessionEngine {
             microBreaksTriggered: microBreaksTriggered,
             microBreaksCompleted: microBreaksCompleted,
             microBreaksSkipped: microBreaksSkipped,
-            longBreakCompleted: longBreakCompleted
+            longBreakCompleted: longBreakCompleted,
+            focusContext: focusContext
         )
     }
 
@@ -486,6 +496,7 @@ public final class SessionEngine {
         microBreaksTriggered = 0
         microBreaksCompleted = 0
         microBreaksSkipped = 0
+        focusContext = nil
         lastRecord = nil
     }
 
@@ -503,6 +514,7 @@ public final class SessionEngine {
         microBreaksTriggered = 0
         microBreaksCompleted = 0
         microBreaksSkipped = 0
+        focusContext = nil
         if !keepingLastRecord {
             lastRecord = nil
         }

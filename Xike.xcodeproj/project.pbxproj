@@ -22,7 +22,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A10000000000000000000007 /* Resources exceptions */ = {
+		A10000000000000000000007 /* Exceptions for "Resources" folder in "Xike" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -32,7 +32,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A10000000000000000000004 /* Xike Sources */ = {
+		A10000000000000000000004 /* Sources/Xike */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Sources/Xike;
 			sourceTree = "<group>";
@@ -40,12 +40,12 @@
 		A10000000000000000000005 /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				A10000000000000000000007 /* Resources exceptions */,
+				A10000000000000000000007 /* Exceptions for "Resources" folder in "Xike" target */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		A10000000000000000000006 /* XikeTests */ = {
+		A10000000000000000000006 /* Tests/XikeTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Tests/XikeTests;
 			sourceTree = "<group>";
@@ -73,9 +73,9 @@
 		A10000000000000000000002 = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000004 /* Xike Sources */,
+				A10000000000000000000004 /* Sources/Xike */,
 				A10000000000000000000005 /* Resources */,
-				A10000000000000000000006 /* XikeTests */,
+				A10000000000000000000006 /* Tests/XikeTests */,
 				A10000000000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -105,7 +105,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				A10000000000000000000004 /* Xike Sources */,
+				A10000000000000000000004 /* Sources/Xike */,
 				A10000000000000000000005 /* Resources */,
 			);
 			name = Xike;
@@ -129,7 +129,7 @@
 				A10000000000000000000013 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				A10000000000000000000006 /* XikeTests */,
+				A10000000000000000000006 /* Tests/XikeTests */,
 			);
 			name = XikeTests;
 			packageProductDependencies = (
@@ -294,7 +294,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhanglishan.Xike;
 				PRODUCT_NAME = Xike;
 				REGISTER_APP_GROUPS = NO;
@@ -322,7 +322,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhanglishan.Xike;
 				PRODUCT_NAME = Xike;
 				REGISTER_APP_GROUPS = NO;

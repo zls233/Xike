@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Xike}",
+            "name": "Debug Xike",
+            "target": "Xike",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug Xike"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Xike}",
+            "name": "Release Xike",
+            "target": "Xike",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release Xike"
+        }
+    ]
+}

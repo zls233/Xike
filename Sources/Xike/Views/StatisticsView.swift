@@ -6,8 +6,8 @@ struct StatisticsView: View {
 
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
-    private var today: TodayStatistics { store.history.statistics(for: store.displayDate) }
-    private var week: [DailyFocusSummary] { store.history.summaries(endingAt: store.displayDate) }
+    private var today: TodayStatistics { store.history.statistics(for: store.statisticsDate) }
+    private var week: [DailyFocusSummary] { store.history.summaries(endingAt: store.statisticsDate) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -63,15 +63,9 @@ struct StatisticsView: View {
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
-            if reduceTransparency {
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .fill(.background)
-            }
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(reduceTransparency ? AnyShapeStyle(.background) : AnyShapeStyle(.regularMaterial))
         }
-        .glassEffect(
-            reduceTransparency ? .identity : .regular,
-            in: .rect(cornerRadius: 28)
-        )
     }
 
     private func stat(value: String, label: String) -> some View {

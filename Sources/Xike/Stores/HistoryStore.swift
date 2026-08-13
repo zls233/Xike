@@ -16,6 +16,10 @@ final class SessionRecordEntity {
     var microBreaksCompleted: Int
     var microBreaksSkipped: Int
     var longBreakCompleted: Bool
+    var taskID: UUID?
+    var taskTitleSnapshot: String?
+    var focusGoal: String?
+    var reflection: String?
 
     init(_ value: SessionRecordValue) {
         id = value.id
@@ -28,10 +32,20 @@ final class SessionRecordEntity {
         microBreaksCompleted = value.microBreaksCompleted
         microBreaksSkipped = value.microBreaksSkipped
         longBreakCompleted = value.longBreakCompleted
+        taskID = value.focusContext?.taskID
+        taskTitleSnapshot = value.focusContext?.taskTitleSnapshot
+        focusGoal = value.focusContext?.goal
+        reflection = value.focusContext?.reflection
     }
 
     var value: SessionRecordValue {
-        SessionRecordValue(
+        let context = FocusContext(
+            taskID: taskID,
+            taskTitleSnapshot: taskTitleSnapshot,
+            goal: focusGoal,
+            reflection: reflection
+        )
+        return SessionRecordValue(
             id: id,
             startedAt: startedAt,
             endedAt: endedAt,
@@ -41,10 +55,12 @@ final class SessionRecordEntity {
             microBreaksTriggered: microBreaksTriggered,
             microBreaksCompleted: microBreaksCompleted,
             microBreaksSkipped: microBreaksSkipped,
-            longBreakCompleted: longBreakCompleted
+            longBreakCompleted: longBreakCompleted,
+            focusContext: context.isEmpty ? nil : context
         )
     }
 }
+
 #endif
 
 struct TodayStatistics: Equatable, Sendable {
@@ -84,6 +100,8 @@ final class HistoryStore {
         self.calendar = calendar
 #if XCODE_BUILD
         do {
+            // The newly added task context columns are optional, so SwiftData
+            // can perform its inferred lightweight migration for existing stores.
             container = try ModelContainer(for: SessionRecordEntity.self)
         } catch {
             container = nil
@@ -129,6 +147,14 @@ final class HistoryStore {
 #if !XCODE_BUILD
         saveJSON()
 #endif
+    }
+
+    func records(for taskID: UUID) -> [SessionRecordValue] {
+        records.filter { $0.focusContext?.taskID == taskID }
+    }
+
+    func activeMinutes(for taskID: UUID) -> Int {
+        Int((records(for: taskID).reduce(0) { $0 + $1.activeFocusDuration } / 60).rounded())
     }
 
     func statistics(for date: Date = Date()) -> TodayStatistics {

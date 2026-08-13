@@ -9,6 +9,10 @@ final class PreferencesStore {
         static let completedOnboarding = "preferences.completedOnboarding"
         static let notificationsEnabled = "preferences.notificationsEnabled"
         static let launchAtLogin = "preferences.launchAtLogin"
+        static let globalShortcutEnabled = "preferences.globalShortcutEnabled"
+        static let globalShortcut = "preferences.globalShortcut"
+        static let breakOverlayEnabled = "preferences.breakOverlayEnabled"
+        static let breakOverlayPosition = "preferences.breakOverlayPosition"
     }
 
     var configuration: FocusConfiguration {
@@ -27,6 +31,22 @@ final class PreferencesStore {
         didSet { defaults.set(launchAtLogin, forKey: Key.launchAtLogin) }
     }
 
+    var globalShortcutEnabled: Bool {
+        didSet { defaults.set(globalShortcutEnabled, forKey: Key.globalShortcutEnabled) }
+    }
+
+    var globalShortcut: GlobalShortcut {
+        didSet { defaults.set(globalShortcut.rawValue, forKey: Key.globalShortcut) }
+    }
+
+    var breakOverlayEnabled: Bool {
+        didSet { defaults.set(breakOverlayEnabled, forKey: Key.breakOverlayEnabled) }
+    }
+
+    var breakOverlayPosition: BreakOverlayPosition {
+        didSet { defaults.set(breakOverlayPosition.rawValue, forKey: Key.breakOverlayPosition) }
+    }
+
     @ObservationIgnored
     private let defaults: UserDefaults
 
@@ -43,6 +63,11 @@ final class PreferencesStore {
         hasCompletedOnboarding = defaults.bool(forKey: Key.completedOnboarding)
         notificationsEnabled = defaults.object(forKey: Key.notificationsEnabled) as? Bool ?? true
         launchAtLogin = defaults.bool(forKey: Key.launchAtLogin)
+        globalShortcutEnabled = defaults.object(forKey: Key.globalShortcutEnabled) as? Bool ?? true
+        globalShortcut = defaults.string(forKey: Key.globalShortcut).flatMap(GlobalShortcut.init(rawValue:)) ?? .commandOptionReturn
+        breakOverlayEnabled = defaults.object(forKey: Key.breakOverlayEnabled) as? Bool ?? true
+        breakOverlayPosition = defaults.string(forKey: Key.breakOverlayPosition)
+            .flatMap(BreakOverlayPosition.init(rawValue:)) ?? .topTrailing
     }
 
     func resetTimingDefaults() {

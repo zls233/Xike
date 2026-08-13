@@ -14,7 +14,7 @@ struct SettingsView: View {
             dataSettings
                 .tabItem { Label("数据", systemImage: "chart.bar") }
         }
-        .frame(width: 560, height: 440)
+        .frame(width: 580, height: 510)
         .scenePadding()
         .confirmationDialog(
             "清除全部专注记录？",
@@ -164,9 +164,62 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
+            Section("休息浮层") {
+                Toggle("显示休息浮层", isOn: Binding(
+                    get: { store.preferences.breakOverlayEnabled },
+                    set: {
+                        store.preferences.breakOverlayEnabled = $0
+                        store.refreshBreakOverlayPreferences()
+                    }
+                ))
+
+                Picker("显示位置", selection: Binding(
+                    get: { store.preferences.breakOverlayPosition },
+                    set: {
+                        store.preferences.breakOverlayPosition = $0
+                        store.refreshBreakOverlayPreferences()
+                    }
+                )) {
+                    ForEach(BreakOverlayPosition.allCases) { position in
+                        Label(position.title, systemImage: position.systemImage).tag(position)
+                    }
+                }
+                .disabled(!store.preferences.breakOverlayEnabled)
+
+                HStack {
+                    Text("浮层不会抢走当前 App 的键盘焦点。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Button("预览") { store.previewBreakOverlay() }
+                        .disabled(!store.preferences.breakOverlayEnabled)
+                }
+            }
+
+            Section("全局快捷键") {
+                Toggle("在其他 App 中控制专注", isOn: Binding(
+                    get: { store.preferences.globalShortcutEnabled },
+                    set: {
+                        store.preferences.globalShortcutEnabled = $0
+                        store.refreshGlobalShortcut()
+                    }
+                ))
+                Picker("快捷键", selection: Binding(
+                    get: { store.preferences.globalShortcut },
+                    set: {
+                        store.preferences.globalShortcut = $0
+                        store.refreshGlobalShortcut()
+                    }
+                )) {
+                    ForEach(GlobalShortcut.allCases) { Text($0.title).tag($0) }
+                }
+                Text("使用系统热键注册，不需要辅助功能权限。")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
             Section("关于") {
                 LabeledContent("名称", value: "息刻")
-                LabeledContent("版本", value: "1.0.0")
+                LabeledContent("版本", value: "1.1.0")
                 LabeledContent("数据", value: "仅保存在这台 Mac")
             }
         }
@@ -177,6 +230,7 @@ struct SettingsView: View {
         Form {
             Section("本地记录") {
                 LabeledContent("已保存", value: "\(store.history.records.count) 轮")
+                LabeledContent("任务", value: "\(store.tasks.tasks.count) 个")
                 Text("记录用于今天和近 7 天摘要，不会上传或同步。")
                     .font(.caption)
                     .foregroundStyle(.secondary)

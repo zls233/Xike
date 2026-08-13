@@ -393,4 +393,35 @@ final class SessionEngineTests: XCTestCase {
         XCTAssertFalse(engine.start())
         XCTAssertFalse(engine.resume())
     }
+
+    func testFocusContextSurvivesSnapshotAndBecomesRecord() throws {
+        let taskID = UUID()
+        let context = FocusContext(taskID: taskID, taskTitleSnapshot: "发布息刻", goal: "完成发布闭环")
+        let original = SessionEngine(now: { self.origin })
+        XCTAssertTrue(original.start(context: context))
+
+        let snapshot = try XCTUnwrap(original.makeSnapshot(at: origin.addingTimeInterval(60)))
+        XCTAssertEqual(snapshot.focusContext, context)
+
+        let restored = SessionEngine(now: { self.origin.addingTimeInterval(120) })
+        XCTAssertTrue(restored.restore(from: snapshot))
+        var revised = context
+        revised.reflection = "完成构建与验证"
+        restored.updateFocusContext(revised)
+        let record = try XCTUnwrap(restored.end(at: origin.addingTimeInterval(180)))
+
+        XCTAssertEqual(record.focusContext, revised)
+        XCTAssertEqual(record.focusContext?.taskID, taskID)
+    }
+
+    func testEndingFocusDoesNotMutateTaskState() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let taskStore = TaskStore(storageURL: directory.appendingPathComponent("tasks.json"))
+        let task = try XCTUnwrap(taskStore.create(title: "保持手动完成"))
+        let engine = SessionEngine(now: { self.origin })
+        XCTAssertTrue(engine.start(context: FocusContext(taskID: task.id, taskTitleSnapshot: task.title)))
+        _ = engine.end(at: origin.addingTimeInterval(120))
+
+        XCTAssertFalse(try XCTUnwrap(taskStore.task(id: task.id)).isCompleted)
+    }
 }

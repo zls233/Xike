@@ -9,11 +9,14 @@ enum NotificationPermissionState: Sendable, Equatable {
 
 enum NotificationServiceError: LocalizedError {
     case permissionDenied
+    case unavailableOutsideApplicationBundle
 
     var errorDescription: String? {
         switch self {
         case .permissionDenied:
             "通知权限未开启。提示音和休息浮层仍可正常使用。"
+        case .unavailableOutsideApplicationBundle:
+            "通知服务只能从 Xike.app 中使用。"
         }
     }
 }
@@ -21,20 +24,36 @@ enum NotificationServiceError: LocalizedError {
 /// Local notifications are supplemental; callers must never use delivery as a timer signal.
 @MainActor
 final class NotificationService {
-    private let center: UNUserNotificationCenter
+    private let center: UNUserNotificationCenter?
 
-    init(center: UNUserNotificationCenter = .current()) {
-        self.center = center
+    init(center: UNUserNotificationCenter? = nil) {
+        if let center {
+            self.center = center
+        } else if Self.supportsNotifications(
+            bundleURL: Bundle.main.bundleURL,
+            bundleIdentifier: Bundle.main.bundleIdentifier
+        ) {
+            // UNUserNotificationCenter raises an Objective-C exception when a
+            // command-line debugger launches the Mach-O outside its app bundle.
+            self.center = .current()
+        } else {
+            self.center = nil
+            XikeLog.notifications.notice("Notification service unavailable outside an application bundle")
+        }
     }
 
     func permissionState() async -> NotificationPermissionState {
+        guard let center else { return .notDetermined }
         let settings = await center.notificationSettings()
         return Self.permissionState(for: settings.authorizationStatus)
     }
 
     @discardableResult
     func requestAuthorization() async throws -> Bool {
-        try await center.requestAuthorization(options: [.alert, .sound])
+        guard let center else {
+            throw NotificationServiceError.unavailableOutsideApplicationBundle
+        }
+        return try await center.requestAuthorization(options: [.alert, .sound])
     }
 
     @discardableResult
@@ -69,7 +88,7 @@ final class NotificationService {
     }
 
     func removeDeliveredNotifications() {
-        center.removeDeliveredNotifications(withIdentifiers: [
+        center?.removeDeliveredNotifications(withIdentifiers: [
             "xike.long-break.started",
             "xike.long-break.ended",
             "xike.session.resume",
@@ -83,6 +102,7 @@ final class NotificationService {
         body: String,
         interruptionLevel: UNNotificationInterruptionLevel
     ) async throws -> Bool {
+        guard let center else { return false }
         let state = await permissionState()
         guard state == .authorized else {
             if state == .denied {
@@ -114,5 +134,10 @@ final class NotificationService {
         @unknown default:
             .denied
         }
+    }
+
+    nonisolated static func supportsNotifications(bundleURL: URL, bundleIdentifier: String?) -> Bool {
+        bundleURL.pathExtension.caseInsensitiveCompare("app") == .orderedSame
+            && !(bundleIdentifier?.isEmpty ?? true)
     }
 }
