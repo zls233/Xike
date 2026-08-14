@@ -8,7 +8,7 @@ struct DashboardView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 16) {
                 header
 
                 if store.shouldOfferResume {
@@ -16,24 +16,26 @@ struct DashboardView: View {
                 }
 
                 ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .top, spacing: 20) {
+                    HStack(alignment: .top, spacing: 16) {
                         TimerCardView(store: store)
                             .frame(minWidth: 500, maxWidth: .infinity)
-                        VStack(spacing: 20) {
+                        VStack(spacing: 16) {
                             StatisticsView(store: store)
+                                .frame(height: 236)
                             ActiveTasksCard(store: store)
+                                .frame(height: 180)
                         }
                         .frame(width: 326)
                     }
 
-                    VStack(spacing: 20) {
+                    VStack(spacing: 16) {
                         TimerCardView(store: store)
                         ViewThatFits(in: .horizontal) {
-                            HStack(alignment: .top, spacing: 20) {
+                            HStack(alignment: .top, spacing: 16) {
                                 StatisticsView(store: store)
                                 ActiveTasksCard(store: store)
                             }
-                            VStack(spacing: 20) {
+                            VStack(spacing: 16) {
                                 StatisticsView(store: store)
                                 ActiveTasksCard(store: store)
                             }
@@ -41,7 +43,7 @@ struct DashboardView: View {
                     }
                 }
             }
-            .padding(24)
+            .padding(20)
         }
         .background { dashboardBackground }
         .frame(minWidth: 520, minHeight: 560)
@@ -78,11 +80,11 @@ struct DashboardView: View {
 
     private var headerSubtitle: String {
         switch store.engine.phase {
-        case .idle: "选择一件重要的事，进入自己的节奏。"
-        case .focusing: "保持单点投入，休息提示会在合适的时候出现。"
-        case .microBreak: "短暂离开屏幕，让注意力重新变得清晰。"
-        case .longBreak: "这一轮已经完成，现在安心恢复。"
-        case .awaitingNextCycle: "本轮记录已保存，准备好再继续。"
+        case .idle: "选择一件重要的事，进入自己的节奏。".xikeLocalized
+        case .focusing: "保持单点投入，休息提示会在合适的时候出现。".xikeLocalized
+        case .microBreak: "短暂离开屏幕，让注意力重新变得清晰。".xikeLocalized
+        case .longBreak: "这一轮已经完成，现在安心恢复。".xikeLocalized
+        case .awaitingNextCycle: "本轮记录已保存，准备好再继续。".xikeLocalized
         }
     }
 
@@ -142,7 +144,7 @@ private struct ActiveTasksCard: View {
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("接下来").font(.headline)
                 Spacer()
@@ -158,7 +160,7 @@ private struct ActiveTasksCard: View {
                     systemImage: "checkmark.circle",
                     description: Text("新建任务，或直接填写本轮目标。")
                 )
-                .frame(maxWidth: .infinity, minHeight: 100)
+                .frame(maxWidth: .infinity, minHeight: 78)
             } else {
                 ForEach(store.tasks.activeTasks.prefix(3)) { task in
                     Button {
@@ -179,7 +181,7 @@ private struct ActiveTasksCard: View {
                 }
             }
         }
-        .padding(20)
+        .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
             RoundedRectangle(cornerRadius: 26, style: .continuous)
@@ -188,10 +190,10 @@ private struct ActiveTasksCard: View {
     }
 
     private func taskSubtitle(_ task: TaskItem) -> String {
-        [task.tag, task.estimatedMinutes.map { "\($0) 分钟" }]
+        [task.tag, task.estimatedMinutes.map { XikeText.format("%lld 分钟", $0) }]
             .compactMap { $0 }
             .joined(separator: " · ")
-            .nonEmpty ?? "未设置标签和预计时长"
+            .nonEmpty ?? "未设置标签和预计时长".xikeLocalized
     }
 }
 

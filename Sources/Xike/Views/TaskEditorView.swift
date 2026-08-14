@@ -28,7 +28,7 @@ struct TaskEditorView: View {
                 TextField("标签（可选）", text: $tag)
                 Toggle("设置预计时长", isOn: $hasEstimate)
                 if hasEstimate {
-                    Stepper("预计 \(estimatedMinutes) 分钟", value: $estimatedMinutes, in: 5 ... 480, step: 5)
+                    Stepper(XikeText.format("预计 %lld 分钟", estimatedMinutes), value: $estimatedMinutes, in: 5 ... 480, step: 5)
                 }
             }
             HStack {

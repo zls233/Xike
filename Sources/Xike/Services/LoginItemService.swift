@@ -15,9 +15,9 @@ enum LoginItemServiceError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .unavailable:
-            "登录项服务当前不可用。请确认 App 位于“应用程序”文件夹中。"
+            "登录项服务当前不可用。请确认 App 位于“应用程序”文件夹中。".xikeLocalized
         case .operationFailed(let details):
-            "无法更新登录时启动设置：\(details)"
+            XikeText.format("无法更新登录时启动设置：%@", details)
         }
     }
 }

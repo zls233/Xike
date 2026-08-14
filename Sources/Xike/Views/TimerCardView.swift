@@ -6,14 +6,14 @@ struct TimerCardView: View {
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 18) {
             phaseHeader
             focusContextEditor
             SessionTimerDial(store: store)
             controls
         }
-        .padding(34)
-        .frame(maxWidth: .infinity, minHeight: 430)
+        .padding(28)
+        .frame(maxWidth: .infinity, minHeight: 432)
         .background {
             RoundedRectangle(cornerRadius: 34, style: .continuous)
                 .fill(reduceTransparency ? AnyShapeStyle(.background) : AnyShapeStyle(.regularMaterial))
@@ -84,7 +84,7 @@ struct TimerCardView: View {
                         store.skipLongBreak()
                     }
                     .buttonStyle(.glass)
-                    .accessibilityHint("结束长休息，决定是否开始下一轮专注")
+                    .accessibilityHint("结束长休息，决定是否开始下一轮专注".xikeLocalized)
                 } else {
                     Button("结束", systemImage: "stop.fill") {
                         store.requestEndSession()
@@ -153,24 +153,26 @@ private struct SessionTimerDial: View {
 
             VStack(spacing: 7) {
                 Text(TimeDisplay.clock(displayedTime))
-                    .font(.system(size: 62, weight: .light, design: .rounded))
+                    .font(.system(size: 58, weight: .light, design: .rounded))
                     .monospacedDigit()
                     .lineLimit(1)
-                    .frame(width: 190)
+                    .frame(width: 180)
                     .accessibilityLabel(TimeDisplay.accessibilityDuration(displayedTime))
 
                 if store.engine.phase == .microBreak {
-                    Text(store.isMicroBreakIntro ? "短休息即将开始" : "第 \(store.engine.microBreaksTriggered) 次短休息")
+                    Text(store.isMicroBreakIntro
+                        ? "短休息即将开始".xikeLocalized
+                        : XikeText.format("第 %lld 次短休息", store.engine.microBreaksTriggered))
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 } else if store.engine.phase == .focusing {
-                    Text("已完成 \(store.engine.microBreaksCompleted) 次短休息")
+                    Text(XikeText.format("已完成 %lld 次短休息", store.engine.microBreaksCompleted))
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
             }
         }
-        .frame(width: 228, height: 228)
+        .frame(width: 210, height: 210)
     }
 
     private var progressColor: Color {

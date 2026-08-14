@@ -22,11 +22,11 @@ enum SoundServiceError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .audioEngineUnavailable(let details):
-            "无法启动音频引擎：\(details)"
+            XikeText.format("无法启动音频引擎：%@", details)
         case .soundUnavailable(let name):
-            "提示音“\(name)”当前不可用。"
+            XikeText.format("提示音“%@”当前不可用。", name)
         case .playbackFailed(let name):
-            "无法播放提示音“\(name)”。"
+            XikeText.format("无法播放提示音“%@”。", name)
         }
     }
 }
@@ -43,9 +43,9 @@ final class SoundService {
 
         var displayName: String {
             switch self {
-            case .softBell: "柔铃"
-            case .warmDrops: "暖滴"
-            case .clearBreeze: "清风"
+            case .softBell: "柔铃".xikeLocalized
+            case .warmDrops: "暖滴".xikeLocalized
+            case .clearBreeze: "清风".xikeLocalized
             }
         }
 

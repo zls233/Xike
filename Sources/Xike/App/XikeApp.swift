@@ -25,10 +25,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "当前专注仍在进行"
-        alert.informativeText = "结束后会把已完成时间记录为中止。"
-        alert.addButton(withTitle: "继续专注")
-        alert.addButton(withTitle: "结束并退出")
+        alert.messageText = "当前专注仍在进行".xikeLocalized
+        alert.informativeText = "结束后会把已完成时间记录为中止。".xikeLocalized
+        alert.addButton(withTitle: "继续专注".xikeLocalized)
+        alert.addButton(withTitle: "结束并退出".xikeLocalized)
 
         if alert.runModal() == .alertFirstButtonReturn {
             return .terminateCancel
@@ -112,9 +112,9 @@ struct XikeApp: App {
     }
 
     private var primaryCommandTitle: String {
-        if store.engine.canPause { return "暂停" }
-        if store.engine.canResume { return "继续" }
-        return "开始专注"
+        if store.engine.canPause { return "暂停".xikeLocalized }
+        if store.engine.canResume { return "继续".xikeLocalized }
+        return "开始专注".xikeLocalized
     }
 
     private var primaryCommandImage: String {

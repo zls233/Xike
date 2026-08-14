@@ -10,10 +10,10 @@ enum TaskStatusFilter: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .active: "待完成"
-        case .completed: "已完成"
-        case .archived: "已归档"
-        case .all: "全部"
+        case .active: "待完成".xikeLocalized
+        case .completed: "已完成".xikeLocalized
+        case .archived: "已归档".xikeLocalized
+        case .all: "全部".xikeLocalized
         }
     }
 }
@@ -119,7 +119,7 @@ final class TaskStore {
             tasks = try JSONDecoder().decode([TaskItem].self, from: Data(contentsOf: storageURL))
             sort()
         } catch {
-            persistenceError = "无法读取任务：\(error.localizedDescription)"
+            persistenceError = XikeText.format("无法读取任务：%@", error.localizedDescription)
         }
     }
 
@@ -129,7 +129,7 @@ final class TaskStore {
             try JSONEncoder().encode(tasks).write(to: storageURL, options: .atomic)
             persistenceError = nil
         } catch {
-            persistenceError = "无法保存任务：\(error.localizedDescription)"
+            persistenceError = XikeText.format("无法保存任务：%@", error.localizedDescription)
         }
     }
 }

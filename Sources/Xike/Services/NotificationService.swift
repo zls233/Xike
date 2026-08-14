@@ -14,9 +14,9 @@ enum NotificationServiceError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .permissionDenied:
-            "通知权限未开启。提示音和休息浮层仍可正常使用。"
+            "通知权限未开启。提示音和休息浮层仍可正常使用。".xikeLocalized
         case .unavailableOutsideApplicationBundle:
-            "通知服务只能从 Xike.app 中使用。"
+            "通知服务只能从 Xike.app 中使用。".xikeLocalized
         }
     }
 }
@@ -61,8 +61,8 @@ final class NotificationService {
         let minutes = max(durationMinutes, 1)
         return try await send(
             identifier: "xike.long-break.started",
-            title: "专注完成",
-            body: "现在休息 \(minutes) 分钟吧。",
+            title: "专注完成".xikeLocalized,
+            body: XikeText.format("现在休息 %lld 分钟吧。", minutes),
             interruptionLevel: .active
         )
     }
@@ -71,8 +71,8 @@ final class NotificationService {
     func notifyLongBreakEnded() async throws -> Bool {
         try await send(
             identifier: "xike.long-break.ended",
-            title: "长休息结束",
-            body: "准备好后，可以开始下一轮专注。",
+            title: "长休息结束".xikeLocalized,
+            body: "准备好后，可以开始下一轮专注。".xikeLocalized,
             interruptionLevel: .active
         )
     }
@@ -81,8 +81,8 @@ final class NotificationService {
     func notifyResumeAvailable() async throws -> Bool {
         try await send(
             identifier: "xike.session.resume",
-            title: "专注已暂停",
-            body: "设备已经恢复，请选择继续本轮或结束本轮。",
+            title: "专注已暂停".xikeLocalized,
+            body: "设备已经恢复，请选择继续本轮或结束本轮。".xikeLocalized,
             interruptionLevel: .active
         )
     }

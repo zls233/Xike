@@ -304,6 +304,30 @@ final class SessionEngineTests: XCTestCase {
         XCTAssertFalse(record.longBreakCompleted)
     }
 
+    func testActiveFocusDurationFreezesForPauseAndLongBreak() {
+        let configuration = FocusConfiguration(
+            focusMinutes: 15,
+            longBreakMinutes: 5,
+            microBreakSeconds: 10,
+            minimumPromptMinutes: 14,
+            maximumPromptMinutes: 14
+        )
+        let engine = SessionEngine(configuration: configuration, now: { self.origin })
+        XCTAssertTrue(engine.start(at: origin))
+        XCTAssertEqual(engine.activeFocusDuration(at: origin.addingTimeInterval(180)), 180)
+
+        XCTAssertTrue(engine.pause(at: origin.addingTimeInterval(300)))
+        XCTAssertEqual(engine.activeFocusDuration(at: origin.addingTimeInterval(600)), 300)
+
+        XCTAssertTrue(engine.resume(at: origin.addingTimeInterval(600)))
+        XCTAssertTrue(engine.triggerMicroBreak(at: origin.addingTimeInterval(700)))
+        XCTAssertEqual(engine.activeFocusDuration(at: origin.addingTimeInterval(710)), 410)
+
+        engine.tick(at: origin.addingTimeInterval(1_200))
+        XCTAssertEqual(engine.phase, .longBreak)
+        XCTAssertEqual(engine.activeFocusDuration(at: origin.addingTimeInterval(1_400)), 900)
+    }
+
     func testSnapshotRoundTripRestoresPausedAndExcludesOfflineTime() throws {
         var firstClock = origin
         let original = SessionEngine(

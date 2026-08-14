@@ -5,10 +5,11 @@ struct MenuBarView: View {
     @Bindable var store: AppStore
 
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var body: some View {
-        GlassEffectContainer(spacing: 12) {
-            VStack(alignment: .leading, spacing: 12) {
+        GlassEffectContainer(spacing: 10) {
+            VStack(alignment: .leading, spacing: 10) {
                 MenuBarStatusHeader(store: store)
 
                 if let contextTitle {
@@ -21,6 +22,7 @@ struct MenuBarView: View {
                         .glassEffect(.regular, in: .capsule)
                 }
 
+                todayFocusSummary
                 sessionControls
 
                 quickLinks
@@ -88,7 +90,7 @@ struct MenuBarView: View {
     }
 
     private var quickLinks: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 6) {
             quickLink("任务", systemImage: "checklist", windowID: "tasks")
             quickLink("记录", systemImage: "clock.arrow.circlepath", windowID: "history")
             quickLink("主窗口", systemImage: "macwindow", windowID: "main")
@@ -106,6 +108,23 @@ struct MenuBarView: View {
         }
         .font(.caption)
         .padding(.horizontal, 2)
+    }
+
+    private var todayFocusSummary: some View {
+        HStack {
+            Label("今日专注", systemImage: "chart.bar.fill")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(TimeDisplay.focusDuration(store.todayActiveFocusDuration))
+                .font(.callout.weight(.semibold))
+                .monospacedDigit()
+        }
+        .padding(.horizontal, 11)
+        .padding(.vertical, 7)
+        .glassEffect(reduceTransparency ? .identity : .regular, in: .rect(cornerRadius: 12))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(XikeText.format("今日专注 %@", TimeDisplay.focusDuration(store.todayActiveFocusDuration)))
     }
 
     private var contextTitle: String? {
@@ -131,7 +150,7 @@ struct MenuBarView: View {
         let controlSize: ControlSize = prominence == .primary ? .large : .regular
 
         let button = Button(action: action) {
-            Label(title, systemImage: systemImage)
+            Label(title.xikeLocalized, systemImage: systemImage)
                 .font(labelFont)
                 .frame(maxWidth: .infinity)
                 .frame(height: labelHeight)
@@ -155,11 +174,11 @@ struct MenuBarView: View {
                 Image(systemName: systemImage)
                     .font(.system(size: 16, weight: .medium))
                     .frame(height: 18)
-                Text(title)
+                Text(title.xikeLocalized)
                     .font(.caption.weight(.medium))
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 46)
+            .frame(height: 42)
             .contentShape(.rect)
         }
         .buttonStyle(.glass)
@@ -204,15 +223,15 @@ private struct MenuBarStatusHeader: View {
     }
 
     private var statusDetail: String {
-        if store.engine.isPaused { return "等待你继续" }
+        if store.engine.isPaused { return "等待你继续".xikeLocalized }
         switch store.engine.phase {
         case .idle:
             let config = store.preferences.configuration
-            return "\(config.focusMinutes) 分钟 · 提示 \(config.minimumPromptMinutes)–\(config.maximumPromptMinutes) 分钟"
-        case .focusing: return "随机提示已开启"
-        case .microBreak: return store.isMicroBreakIntro ? "短休息即将开始" : "看看远处"
-        case .longBreak: return "离开屏幕"
-        case .awaitingNextCycle: return "准备好再开始"
+            return XikeText.format("%lld 分钟 · 提示 %lld–%lld 分钟", config.focusMinutes, config.minimumPromptMinutes, config.maximumPromptMinutes)
+        case .focusing: return "随机提示已开启".xikeLocalized
+        case .microBreak: return store.isMicroBreakIntro ? "短休息即将开始".xikeLocalized : "看看远处".xikeLocalized
+        case .longBreak: return "离开屏幕".xikeLocalized
+        case .awaitingNextCycle: return "准备好再开始".xikeLocalized
         }
     }
 }

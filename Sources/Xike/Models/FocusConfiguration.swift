@@ -18,19 +18,19 @@ public enum FocusConfigurationError: Error, Equatable, LocalizedError, Sendable 
     public var errorDescription: String? {
         switch self {
         case .focusMinutesOutOfRange:
-            "专注时长必须在 15 到 240 分钟之间。"
+            "专注时长必须在 15 到 240 分钟之间。".xikeLocalized
         case .longBreakMinutesOutOfRange:
-            "长休息必须在 1 到 60 分钟之间。"
+            "长休息必须在 1 到 60 分钟之间。".xikeLocalized
         case .microBreakSecondsOutOfRange:
-            "微休息必须在 5 到 60 秒之间。"
+            "微休息必须在 5 到 60 秒之间。".xikeLocalized
         case .minimumPromptMinutesOutOfRange, .maximumPromptMinutesOutOfRange:
-            "随机提示间隔必须在 1 到 30 分钟之间。"
+            "随机提示间隔必须在 1 到 30 分钟之间。".xikeLocalized
         case .promptRangeIsReversed:
-            "随机提示的最小间隔不能大于最大间隔。"
+            "随机提示的最小间隔不能大于最大间隔。".xikeLocalized
         case .promptIntervalNotShorterThanFocus:
-            "随机提示的最大间隔必须短于专注时长。"
+            "随机提示的最大间隔必须短于专注时长。".xikeLocalized
         case .volumeOutOfRange:
-            "音量必须在 0 到 1 之间。"
+            "音量必须在 0 到 1 之间。".xikeLocalized
         }
     }
 }

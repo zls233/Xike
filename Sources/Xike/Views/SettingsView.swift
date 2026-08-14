@@ -220,7 +220,7 @@ struct SettingsView: View {
             Section("关于") {
                 LabeledContent("名称", value: "息刻")
                 LabeledContent("版本", value: "1.1.0")
-                LabeledContent("数据", value: "仅保存在这台 Mac")
+                LabeledContent("数据", value: "仅保存在这台 Mac".xikeLocalized)
             }
         }
         .formStyle(.grouped)
@@ -229,8 +229,8 @@ struct SettingsView: View {
     private var dataSettings: some View {
         Form {
             Section("本地记录") {
-                LabeledContent("已保存", value: "\(store.history.records.count) 轮")
-                LabeledContent("任务", value: "\(store.tasks.tasks.count) 个")
+                LabeledContent("已保存", value: XikeText.format("%lld 轮", store.history.records.count))
+                LabeledContent("任务", value: XikeText.format("%lld 个", store.tasks.tasks.count))
                 Text("记录用于今天和近 7 天摘要，不会上传或同步。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -260,7 +260,9 @@ struct SettingsView: View {
                     .foregroundStyle(selected ? Color.accentColor : .secondary)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(selected ? "取消选择 \(sound.displayName)" : "选择 \(sound.displayName)")
+            .accessibilityLabel(selected
+                ? XikeText.format("取消选择 %@", sound.displayName)
+                : XikeText.format("选择 %@", sound.displayName))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(sound.displayName)
@@ -274,7 +276,7 @@ struct SettingsView: View {
             }
             .labelStyle(.iconOnly)
             .buttonStyle(.plain)
-            .accessibilityLabel("试听 \(sound.displayName)")
+            .accessibilityLabel(XikeText.format("试听 %@", sound.displayName))
         }
         .padding(.vertical, 5)
         .contentShape(.rect)
@@ -362,9 +364,9 @@ struct SettingsView: View {
 
     private var notificationStatusText: String {
         switch store.notificationPermission {
-        case .notDetermined: "系统尚未询问通知权限。"
-        case .denied: "系统通知已关闭；声音和微休息浮层仍会正常工作。"
-        case .authorized: "系统通知已允许。"
+        case .notDetermined: "系统尚未询问通知权限。".xikeLocalized
+        case .denied: "系统通知已关闭；声音和微休息浮层仍会正常工作。".xikeLocalized
+        case .authorized: "系统通知已允许。".xikeLocalized
         }
     }
 }

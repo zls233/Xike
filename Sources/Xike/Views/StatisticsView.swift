@@ -6,32 +6,44 @@ struct StatisticsView: View {
 
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
-    private var today: TodayStatistics { store.history.statistics(for: store.statisticsDate) }
-    private var week: [DailyFocusSummary] { store.history.summaries(endingAt: store.statisticsDate) }
+    private var today: TodayStatistics { store.todayStatistics }
+    private var week: [DailyFocusSummary] { store.recentDailyFocusSummaries }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            Text("今天")
-                .font(.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("今日专注")
+                    .font(.headline)
+                Spacer()
+                if store.engine.phase.isRunning {
+                    Text("包含当前轮")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Text(TimeDisplay.focusDuration(store.todayActiveFocusDuration))
+                .font(.title.weight(.semibold))
+                .monospacedDigit()
+                .contentTransition(.numericText())
+                .accessibilityLabel(XikeText.format("今日专注 %@", TimeDisplay.focusDuration(store.todayActiveFocusDuration)))
 
             HStack(spacing: 10) {
-                stat(value: "\(today.completedCycles)", label: "完成轮数")
-                stat(value: "\(today.activeMinutes)", label: "专注分钟")
+                stat(value: "\(today.completedCycles)", label: "完成轮数".xikeLocalized)
                 stat(
                     value: today.microBreakCompletionRate.formatted(.percent.precision(.fractionLength(0))),
-                    label: "微休息完成"
+                    label: "微休息完成".xikeLocalized
                 )
             }
 
-            Divider()
-
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text("近 7 天")
-                    .font(.subheadline.weight(.semibold))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
                 Chart(week) { item in
                     BarMark(
-                        x: .value("日期", item.date, unit: .day),
-                        y: .value("分钟", item.minutes)
+                        x: .value("日期".xikeLocalized, item.date, unit: .day),
+                        y: .value("分钟".xikeLocalized, item.minutes)
                     )
                     .foregroundStyle(Color.accentColor.gradient)
                     .cornerRadius(4)
@@ -41,26 +53,12 @@ struct StatisticsView: View {
                         AxisValueLabel(format: .dateTime.weekday(.narrow))
                     }
                 }
-                .chartYAxis {
-                    AxisMarks(position: .leading)
-                }
-                .frame(height: 154)
+                .chartYAxis(.hidden)
+                .frame(height: 68)
                 .accessibilityLabel("近七天专注时长图表")
             }
-
-            if let latest = store.history.records.first {
-                Divider()
-                HStack {
-                    Label("最近一轮", systemImage: latest.outcome == .completed ? "checkmark.circle" : "xmark.circle")
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    Text(latest.startedAt, format: .dateTime.month().day().hour().minute())
-                        .foregroundStyle(.tertiary)
-                }
-                .font(.caption)
-            }
         }
-        .padding(24)
+        .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
             RoundedRectangle(cornerRadius: 28, style: .continuous)

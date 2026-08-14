@@ -54,9 +54,9 @@ struct PauseResumeFocusIntent: AppIntent {
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let message = await MainActor.run { () -> String in
             let store = AppStore.shared
-            if store.engine.canPause { store.pauseSession(); return "专注已暂停。" }
-            if store.engine.canResume { store.resumeSession(); return "专注已继续。" }
-            return "目前没有可暂停或继续的专注。"
+            if store.engine.canPause { store.pauseSession(); return "专注已暂停。".xikeLocalized }
+            if store.engine.canResume { store.resumeSession(); return "专注已继续。".xikeLocalized }
+            return "目前没有可暂停或继续的专注。".xikeLocalized
         }
         return .result(dialog: IntentDialog(stringLiteral: message))
     }

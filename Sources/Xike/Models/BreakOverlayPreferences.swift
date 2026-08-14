@@ -12,11 +12,11 @@ enum BreakOverlayPosition: String, Codable, CaseIterable, Identifiable, Sendable
 
     var title: String {
         return switch self {
-        case .center: "屏幕中央"
-        case .topLeading: "左上角"
-        case .topTrailing: "右上角"
-        case .bottomLeading: "左下角"
-        case .bottomTrailing: "右下角"
+        case .center: "屏幕中央".xikeLocalized
+        case .topLeading: "左上角".xikeLocalized
+        case .topTrailing: "右上角".xikeLocalized
+        case .bottomLeading: "左下角".xikeLocalized
+        case .bottomTrailing: "右下角".xikeLocalized
         }
     }
 

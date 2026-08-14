@@ -97,9 +97,9 @@ struct TasksView: View {
                     }
                 }
                 HStack(spacing: 28) {
-                    metric("预计", task.estimatedMinutes.map { "\($0) 分钟" } ?? "未设置")
-                    metric("累计专注", "\(store.history.activeMinutes(for: task.id)) 分钟")
-                    metric("专注记录", "\(store.history.records(for: task.id).count) 轮")
+                    metric("预计", task.estimatedMinutes.map { XikeText.format("%lld 分钟", $0) } ?? "未设置".xikeLocalized)
+                    metric("累计专注", XikeText.format("%lld 分钟", store.history.activeMinutes(for: task.id)))
+                    metric("专注记录", XikeText.format("%lld 轮", store.history.records(for: task.id).count))
                 }
                 Divider()
                 Button("为此任务开始专注", systemImage: "play.fill") {
@@ -127,7 +127,7 @@ struct TasksView: View {
     private func metric(_ title: String, _ value: String) -> some View {
         VStack(alignment: .leading) {
             Text(value).font(.title3.weight(.semibold))
-            Text(title).font(.caption).foregroundStyle(.secondary)
+            Text(title.xikeLocalized).font(.caption).foregroundStyle(.secondary)
         }
     }
 

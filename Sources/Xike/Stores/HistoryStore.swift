@@ -73,10 +73,14 @@ struct TodayStatistics: Equatable, Sendable {
 
 struct DailyFocusSummary: Identifiable, Equatable, Sendable {
     var date: Date
-    var minutes: Int
+    var activeFocusDuration: TimeInterval
     var completedCycles: Int
 
     var id: Date { date }
+
+    var minutes: Int {
+        Int((activeFocusDuration / 60).rounded())
+    }
 }
 
 @MainActor
@@ -105,7 +109,7 @@ final class HistoryStore {
             container = try ModelContainer(for: SessionRecordEntity.self)
         } catch {
             container = nil
-            persistenceError = "无法打开专注记录：\(error.localizedDescription)"
+            persistenceError = XikeText.format("无法打开专注记录：%@", error.localizedDescription)
         }
         reloadFromSwiftData()
 #else
@@ -124,7 +128,7 @@ final class HistoryStore {
         do {
             try context.save()
         } catch {
-            persistenceError = "无法保存专注记录：\(error.localizedDescription)"
+            persistenceError = XikeText.format("无法保存专注记录：%@", error.localizedDescription)
         }
 #else
         saveJSON()
@@ -138,7 +142,7 @@ final class HistoryStore {
                 try context.delete(model: SessionRecordEntity.self)
                 try context.save()
             } catch {
-                persistenceError = "无法清除专注记录：\(error.localizedDescription)"
+                persistenceError = XikeText.format("无法清除专注记录：%@", error.localizedDescription)
                 return
             }
         }
@@ -157,11 +161,25 @@ final class HistoryStore {
         Int((records(for: taskID).reduce(0) { $0 + $1.activeFocusDuration } / 60).rounded())
     }
 
+    func activeFocusDuration(for date: Date = Date()) -> TimeInterval {
+        Self.activeFocusDuration(in: records, for: date, calendar: calendar)
+    }
+
+    static func activeFocusDuration(
+        in records: [SessionRecordValue],
+        for date: Date,
+        calendar: Calendar = .current
+    ) -> TimeInterval {
+        records
+            .filter { calendar.isDate($0.startedAt, inSameDayAs: date) }
+            .reduce(0) { $0 + $1.activeFocusDuration }
+    }
+
     func statistics(for date: Date = Date()) -> TodayStatistics {
         let todayRecords = records.filter { calendar.isDate($0.startedAt, inSameDayAs: date) }
         guard !todayRecords.isEmpty else { return .empty }
         let completed = todayRecords.filter { $0.outcome == .completed }.count
-        let activeSeconds = todayRecords.reduce(0) { $0 + $1.activeFocusDuration }
+        let activeSeconds = Self.activeFocusDuration(in: todayRecords, for: date, calendar: calendar)
         let triggered = todayRecords.reduce(0) { $0 + $1.microBreaksTriggered }
         let completedBreaks = todayRecords.reduce(0) { $0 + $1.microBreaksCompleted }
         let rate = triggered == 0 ? 0 : Double(completedBreaks) / Double(triggered)
@@ -181,7 +199,7 @@ final class HistoryStore {
             let seconds = matching.reduce(0) { $0 + $1.activeFocusDuration }
             return DailyFocusSummary(
                 date: day,
-                minutes: Int((seconds / 60).rounded()),
+                activeFocusDuration: seconds,
                 completedCycles: matching.filter { $0.outcome == .completed }.count
             )
         }
@@ -195,7 +213,7 @@ final class HistoryStore {
         do {
             records = try context.fetch(descriptor).map(\.value)
         } catch {
-            persistenceError = "无法读取专注记录：\(error.localizedDescription)"
+            persistenceError = XikeText.format("无法读取专注记录：%@", error.localizedDescription)
         }
     }
 #else
@@ -214,7 +232,7 @@ final class HistoryStore {
             records = try JSONDecoder().decode([SessionRecordValue].self, from: data)
                 .sorted { $0.startedAt > $1.startedAt }
         } catch {
-            persistenceError = "无法读取专注记录：\(error.localizedDescription)"
+            persistenceError = XikeText.format("无法读取专注记录：%@", error.localizedDescription)
         }
     }
 
@@ -228,7 +246,7 @@ final class HistoryStore {
             try data.write(to: storageURL, options: .atomic)
             persistenceError = nil
         } catch {
-            persistenceError = "无法保存专注记录：\(error.localizedDescription)"
+            persistenceError = XikeText.format("无法保存专注记录：%@", error.localizedDescription)
         }
     }
 #endif

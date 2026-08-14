@@ -13,8 +13,8 @@ private final class MicroBreakPresentation: ObservableObject {
     @Published var kind: BreakOverlayKind = .microBreak
     @Published var isShowingCountdown = false
     @Published var remainingSeconds = 0
-    @Published var title = "短休息开始"
-    @Published var message = "请暂时离开屏幕，让眼睛和肩颈放松一下。"
+    @Published var title = "短休息开始".xikeLocalized
+    @Published var message = "请暂时离开屏幕，让眼睛和肩颈放松一下。".xikeLocalized
     @Published var primaryButtonTitle: String?
     @Published var secondaryButtonTitle: String?
     @Published var showsActions = false
@@ -98,9 +98,9 @@ final class MicroBreakPanelController: NSObject {
         presentation.kind = .microBreak
         presentation.isShowingCountdown = isShowingCountdown
         presentation.remainingSeconds = max(remainingSeconds, 0)
-        presentation.title = "短休息开始"
-        presentation.message = "请暂时离开屏幕，让眼睛和肩颈放松一下。"
-        presentation.primaryButtonTitle = "跳过"
+        presentation.title = "短休息开始".xikeLocalized
+        presentation.message = "请暂时离开屏幕，让眼睛和肩颈放松一下。".xikeLocalized
+        presentation.primaryButtonTitle = "跳过".xikeLocalized
         presentation.secondaryButtonTitle = nil
         presentation.showsActions = false
         showPanel()
@@ -115,8 +115,8 @@ final class MicroBreakPanelController: NSObject {
         presentation.kind = .longBreakStart
         presentation.isShowingCountdown = false
         presentation.remainingSeconds = 0
-        presentation.title = "长休息开始"
-        presentation.message = "离开屏幕，好好恢复。"
+        presentation.title = "长休息开始".xikeLocalized
+        presentation.message = "离开屏幕，好好恢复。".xikeLocalized
         presentation.primaryButtonTitle = nil
         presentation.secondaryButtonTitle = nil
         presentation.showsActions = false
@@ -146,10 +146,10 @@ final class MicroBreakPanelController: NSObject {
         presentation.kind = .longBreakComplete
         presentation.isShowingCountdown = false
         presentation.remainingSeconds = 0
-        presentation.title = "长休息结束"
-        presentation.message = "恢复得怎么样？由你决定下一步。"
-        presentation.primaryButtonTitle = "开始下一次专注"
-        presentation.secondaryButtonTitle = "结束专注"
+        presentation.title = "长休息结束".xikeLocalized
+        presentation.message = "恢复得怎么样？由你决定下一步。".xikeLocalized
+        presentation.primaryButtonTitle = "开始下一次专注".xikeLocalized
+        presentation.secondaryButtonTitle = "结束专注".xikeLocalized
         presentation.showsActions = false
         showPanel()
     }
@@ -162,9 +162,9 @@ final class MicroBreakPanelController: NSObject {
         presentation.kind = .microBreak
         presentation.isShowingCountdown = true
         presentation.remainingSeconds = 10
-        presentation.title = "短休息"
-        presentation.message = "望向远处，放松肩颈"
-        presentation.primaryButtonTitle = "跳过"
+        presentation.title = "短休息".xikeLocalized
+        presentation.message = "望向远处，放松肩颈".xikeLocalized
+        presentation.primaryButtonTitle = "跳过".xikeLocalized
         presentation.secondaryButtonTitle = nil
         presentation.showsActions = false
         showPanel()
@@ -350,7 +350,7 @@ final class MicroBreakPanelController: NSObject {
         panel.becomesKeyOnlyIfNeeded = true
         panel.ignoresMouseEvents = false
         panel.sharingType = .none
-        panel.setAccessibilityLabel("短休息")
+        panel.setAccessibilityLabel("短休息".xikeLocalized)
         return panel
     }
 
@@ -492,7 +492,7 @@ private struct MicroBreakPanelView: View {
                             .frame(width: 82, alignment: .trailing)
                             .layoutPriority(2)
                             .contentTransition(reduceMotion ? .identity : .numericText(countsDown: true))
-                            .accessibilityLabel("剩余 \(presentation.remainingSeconds) 秒")
+                            .accessibilityLabel(XikeText.format("剩余 %lld 秒", presentation.remainingSeconds))
                     } else if presentation.kind != .longBreakComplete {
                         Image(systemName: "checkmark")
                             .font(.title3.weight(.semibold))
@@ -593,7 +593,7 @@ private struct MicroBreakPanelView: View {
     }
 
     private var displayTitle: String {
-        presentation.isShowingCountdown ? "短休息" : presentation.title
+        presentation.isShowingCountdown ? "短休息".xikeLocalized : presentation.title
     }
 
     private var symbolName: String {
@@ -614,15 +614,15 @@ private struct MicroBreakPanelView: View {
 
     private var accessibilityTitle: String {
         switch presentation.kind {
-        case .microBreak: presentation.isShowingCountdown ? "短休息倒计时" : "短休息开始"
-        case .longBreakStart: "长休息开始"
-        case .longBreakComplete: "长休息结束，请决定下一步"
+        case .microBreak: presentation.isShowingCountdown ? "短休息倒计时".xikeLocalized : "短休息开始".xikeLocalized
+        case .longBreakStart: "长休息开始".xikeLocalized
+        case .longBreakComplete: "长休息结束，请决定下一步".xikeLocalized
         }
     }
 
     private var buttonAccessibilityHint: String {
         presentation.kind == .longBreakComplete
-            ? "选择开始下一次专注或结束专注"
-            : "立即结束本次短休息"
+            ? "选择开始下一次专注或结束专注".xikeLocalized
+            : "立即结束本次短休息".xikeLocalized
     }
 }

@@ -2,467 +2,2910 @@
   "sourceLanguage" : "zh-Hans",
   "strings" : {
     "%@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
     },
     "%lld" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld 个" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld items"
+          }
+        }
+      }
     },
     "%lld 分钟" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min"
+          }
+        }
+      }
+    },
+    "%lld 分钟 · 提示 %lld–%lld 分钟" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min · prompts every %lld–%lld min"
+          }
+        }
+      }
+    },
+    "%lld 小时" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld hr"
+          }
+        }
+      }
+    },
+    "%lld 小时 %lld 分" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld hr %lld min"
+          }
+        }
+      }
+    },
+    "%lld 轮" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sessions"
+          }
+        }
+      }
+    },
+    "0 分钟" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 min"
+          }
+        }
+      }
+    },
+    "90 分钟结束后，进入 20 分钟长休息。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After 90 minutes, take a 20-minute long break."
+          }
+        }
+      }
     },
     "macOS" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS"
+          }
+        }
+      }
+    },
+    "上次的计时状态无法恢复，已安全清除。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The previous timer could not be restored and was safely cleared."
+          }
+        }
+      }
+    },
+    "不打断键盘焦点，只邀请你暂时离开屏幕。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your keyboard focus stays intact; you are simply invited to look away from the screen."
+          }
+        }
+      }
     },
     "不绑定任务" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No task"
+          }
+        }
+      }
+    },
+    "不足 1 分钟" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Less than 1 min"
+          }
+        }
+      }
     },
     "专注" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus"
+          }
+        }
+      }
     },
     "专注 %lld 分钟" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus %lld min"
+          }
+        }
+      }
     },
     "专注不是一直紧绷，而是在恰当的时候松开十秒。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus is not constant tension; it is knowing when to let go for ten seconds."
+          }
+        }
+      }
+    },
+    "专注中" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focusing"
+          }
+        }
+      }
     },
     "专注任务" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus Task"
+          }
+        }
+      }
+    },
+    "专注分钟" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus Minutes"
+          }
+        }
+      }
+    },
+    "专注完成" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus Complete"
+          }
+        }
+      }
     },
     "专注工作台" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus Workspace"
+          }
+        }
+      }
     },
     "专注已安全暂停" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus Safely Paused"
+          }
+        }
+      }
+    },
+    "专注已暂停" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus Paused"
+          }
+        }
+      }
+    },
+    "专注已暂停。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus is paused."
+          }
+        }
+      }
     },
     "专注已经开始。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus has started."
+          }
+        }
+      }
+    },
+    "专注已继续。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus has resumed."
+          }
+        }
+      }
+    },
+    "专注时长必须在 15 到 240 分钟之间。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus duration must be between 15 and 240 minutes."
+          }
+        }
+      }
     },
     "专注模式启用时，为下一轮息刻专注选择节律。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the rhythm for your next Xike focus session when Focus mode is enabled."
+          }
+        }
+      }
     },
     "专注记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus History"
+          }
+        }
+      }
     },
     "为此任务开始专注" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Focus for This Task"
+          }
+        }
+      }
+    },
+    "主窗口" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Main Window"
+          }
+        }
+      }
     },
     "仅保存在本机" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stored only on this Mac"
+          }
+        }
+      }
+    },
+    "仅保存在这台 Mac" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stored only on this Mac"
+          }
+        }
+      }
     },
     "今天" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
+          }
+        }
+      }
+    },
+    "今日专注" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's Focus"
+          }
+        }
+      }
+    },
+    "今日专注 %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's focus: %@"
+          }
+        }
+      }
     },
     "任务" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasks"
+          }
+        }
+      }
     },
     "任务标题" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task Title"
+          }
+        }
+      }
     },
     "休息浮层" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Break Overlay"
+          }
+        }
+      }
     },
     "使用系统热键注册，不需要辅助功能权限。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uses a system hotkey and does not require Accessibility permission."
+          }
+        }
+      }
     },
     "保存" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "保持单点投入，休息提示会在合适的时候出现。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stay focused on one thing; a break prompt will appear at the right time."
+          }
+        }
+      }
     },
     "允许长休息与恢复提醒" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow long-break and resume reminders"
+          }
+        }
+      }
     },
     "全局快捷键" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Shortcut"
+          }
+        }
+      }
+    },
+    "全部" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
     },
     "全部任务" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Tasks"
+          }
+        }
+      }
     },
     "全部标签" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Tags"
+          }
+        }
+      }
     },
     "关于" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
+          }
+        }
+      }
+    },
+    "最短 \\\\(store.preferences.configuration.minimumPromptMinutes) 分钟" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum prompt interval"
+          }
+        }
+      }
     },
     "最短 %lld 分钟" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum %lld min"
+          }
+        }
+      }
     },
     "最近一轮" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest Session"
+          }
+        }
+      }
+    },
+    "最长 \\\\(store.preferences.configuration.maximumPromptMinutes) 分钟" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum prompt interval"
+          }
+        }
+      }
     },
     "最长 %lld 分钟" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum %lld min"
+          }
+        }
+      }
     },
     "写下一句复盘（可选）" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Write a reflection (optional)"
+          }
+        }
+      }
+    },
+    "准备专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ready to Focus"
+          }
+        }
+      }
+    },
+    "准备好再开始" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ready to start"
+          }
+        }
+      }
+    },
+    "准备好后，可以开始下一轮专注。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When you are ready, start the next focus session."
+          }
+        }
+      }
+    },
+    "准备好后再开始下一轮" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start the next session when you are ready"
+          }
+        }
+      }
     },
     "分钟" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "min"
+          }
+        }
+      }
     },
     "删除" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "剩余 %lld 分 %lld 秒" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min %lld sec remaining"
+          }
+        }
+      }
+    },
+    "剩余 %lld 分钟" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min remaining"
+          }
+        }
+      }
     },
     "剩余 %lld 秒" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sec remaining"
+          }
+        }
+      }
+    },
+    "包含当前轮" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Includes current session"
+          }
+        }
+      }
+    },
+    "十秒微休息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten-second Micro-breaks"
+          }
+        }
+      }
     },
     "取消" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
     },
     "取消归档" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unarchive"
+          }
+        }
+      }
     },
     "取消选择 %@" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deselect %@"
+          }
+        }
+      }
     },
     "可用声音" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Available Sounds"
+          }
+        }
+      }
+    },
+    "右上角" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top Right"
+          }
+        }
+      }
+    },
+    "右下角" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottom Right"
+          }
+        }
+      }
     },
     "名称" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
     },
     "启动" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Launch"
+          }
+        }
+      }
     },
     "周期" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cycle"
+          }
+        }
+      }
+    },
+    "回来后继续本轮" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume this session when you return"
+          }
+        }
+      }
     },
     "固定一个" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use One"
+          }
+        }
+      }
     },
     "在其他 App 中控制专注" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control focus in other apps"
+          }
+        }
+      }
     },
     "均衡（90 分钟）" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balanced (90 min)"
+          }
+        }
+      }
     },
     "声音" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sound"
+          }
+        }
+      }
     },
     "好" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
     },
     "存储状态" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storage Status"
+          }
+        }
+      }
+    },
+    "完成轮数" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed Sessions"
+          }
+        }
+      }
+    },
+    "完整恢复" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full Recovery"
+          }
+        }
+      }
+    },
+    "屏幕中央" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Center"
+          }
+        }
+      }
+    },
+    "左上角" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top Left"
+          }
+        }
+      }
+    },
+    "左下角" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottom Left"
+          }
+        }
+      }
     },
     "已中止" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abandoned"
+          }
+        }
+      }
     },
     "已保存" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved"
+          }
+        }
+      }
     },
     "已完成" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed"
+          }
+        }
+      }
     },
     "已完成 %lld 次短休息" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld micro-breaks completed"
+          }
+        }
+      }
     },
     "已完成的时间与微休息记录会保留。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed time and micro-breaks will be kept."
+          }
+        }
+      }
+    },
+    "已归档" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archived"
+          }
+        }
+      }
+    },
+    "已暂停" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paused"
+          }
+        }
+      }
     },
     "开始一轮专注，可选择一个待完成任务。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a focus session and optionally choose a pending task."
+          }
+        }
+      }
+    },
+    "开始下一次专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Next Focus"
+          }
+        }
+      }
     },
     "开始专注" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Focus"
+          }
+        }
+      }
     },
     "开始使用" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get Started"
+          }
+        }
+      }
     },
     "开始息刻专注" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Xike Focus"
+          }
+        }
+      }
     },
     "归档" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archive"
+          }
+        }
+      }
+    },
+    "当前专注仍在进行" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A focus session is still in progress"
+          }
+        }
+      }
     },
     "当前已有一轮专注正在进行。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A focus session is already in progress."
+          }
+        }
+      }
+    },
+    "待完成" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pending"
+          }
+        }
+      }
+    },
+    "待恢复专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume Focus"
+          }
+        }
+      }
     },
     "微休息 %lld 秒" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro-break %lld sec"
+          }
+        }
+      }
     },
     "微休息 %lld/%lld" : {
       "localizations" : {
-        "zh-Hans" : {
+        "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "微休息 %1$lld/%2$lld"
+            "state" : "translated",
+            "value" : "Micro-break %lld/%lld"
+          }
+        }
+      }
+    },
+    "微休息完成" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro-breaks Completed"
+          }
+        }
+      }
+    },
+    "微休息必须在 5 到 60 秒之间。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro-break must be between 5 and 60 seconds."
           }
         }
       }
     },
     "快捷键" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut"
+          }
+        }
+      }
+    },
+    "恢复上次专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume Last Focus"
+          }
+        }
+      }
     },
     "恢复上次专注？" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume your last focus session?"
+          }
+        }
+      }
     },
     "恢复为暂停状态" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume Paused"
+          }
+        }
+      }
+    },
+    "恢复得怎么样？由你决定下一步。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How was your recovery? You decide what comes next."
+          }
+        }
+      }
     },
     "恢复默认节律" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore Default Rhythm"
+          }
+        }
+      }
     },
     "息刻" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xike"
+          }
+        }
+      }
     },
     "息刻，%@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xike, %@"
+          }
+        }
+      }
     },
     "息刻任务" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xike Task"
+          }
+        }
+      }
     },
     "息刻内置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Built into Xike"
+          }
+        }
+      }
     },
     "息刻窗口" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xike Window"
+          }
+        }
+      }
     },
     "息刻节律" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xike Rhythm"
+          }
+        }
+      }
+    },
+    "打开专注记录" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Focus History"
+          }
+        }
+      }
+    },
+    "打开任务" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Tasks"
+          }
+        }
+      }
     },
     "打开息刻窗口" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Xike Window"
+          }
+        }
+      }
     },
     "打开登录项设置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Login Items Settings"
+          }
+        }
+      }
     },
     "接下来" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up Next"
+          }
+        }
+      }
+    },
+    "提示会在合适的时候出现" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A prompt will appear at the right time"
+          }
+        }
+      }
     },
     "提示音" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prompt Sound"
+          }
+        }
+      }
+    },
+    "提示音“%@”当前不可用。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sound “%@” is currently unavailable."
+          }
+        }
+      }
     },
     "搜索任务、目标或复盘" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search tasks, goals, or reflections"
+          }
+        }
+      }
     },
     "搜索任务或标签" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search tasks or tags"
+          }
+        }
+      }
     },
     "播放方式" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playback"
+          }
+        }
+      }
     },
     "放弃记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discard Record"
+          }
+        }
+      }
     },
     "数据" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        }
+      }
     },
     "新建任务" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Task"
+          }
+        }
+      }
     },
     "新建任务，或直接填写本轮目标。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a task, or enter a goal for this session."
+          }
+        }
+      }
+    },
+    "无标签" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Tag"
+          }
+        }
+      }
+    },
+    "无法保存专注记录：%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to save focus history: %@"
+          }
+        }
+      }
+    },
+    "无法保存任务：%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to save tasks: %@"
+          }
+        }
+      }
+    },
+    "无法启动音频引擎：%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to start the audio engine: %@"
+          }
+        }
+      }
+    },
+    "无法打开专注记录：%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to open focus history: %@"
+          }
+        }
+      }
+    },
+    "无法播放提示音“%@”。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to play the sound “%@”."
+          }
+        }
+      }
+    },
+    "无法更新登录时启动设置：%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to update launch-at-login settings: %@"
+          }
+        }
+      }
+    },
+    "无法清除专注记录：%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to clear focus history: %@"
+          }
+        }
+      }
+    },
+    "无法读取专注记录：%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to read focus history: %@"
+          }
+        }
+      }
+    },
+    "无法读取任务：%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to read tasks: %@"
+          }
+        }
+      }
     },
     "日期" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
+          }
+        }
+      }
     },
     "显示休息浮层" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show break overlay"
+          }
+        }
+      }
     },
     "显示位置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Position"
+          }
+        }
+      }
     },
     "暂停" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        }
+      }
+    },
+    "暂停专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause Focus"
+          }
+        }
+      }
     },
     "暂停或继续" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause or Resume"
+          }
+        }
+      }
+    },
+    "暂停或继续 \\\\(.applicationName)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause or resume \\\\(.applicationName)"
+          }
+        }
+      }
     },
     "暂停或继续息刻" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause or Resume Xike"
+          }
+        }
+      }
     },
     "暂无待办" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No pending tasks"
+          }
+        }
+      }
+    },
+    "暖滴" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warm Drops"
+          }
+        }
+      }
+    },
+    "望向远处，放松肩颈" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Look into the distance and relax your shoulders"
+          }
+        }
+      }
+    },
+    "未命名专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untitled Focus"
+          }
+        }
+      }
+    },
+    "未设置" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Set"
+          }
+        }
+      }
+    },
+    "未设置标签和预计时长" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tag or estimated duration"
+          }
+        }
+      }
     },
     "本地记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local Records"
+          }
+        }
+      }
     },
     "本轮专注已经结束并记录。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This focus session ended and was recorded."
+          }
+        }
+      }
+    },
+    "本轮完成" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session Complete"
+          }
+        }
+      }
     },
     "本轮目标" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session Goal"
+          }
+        }
+      }
     },
     "本轮目标（可选）" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session Goal (Optional)"
+          }
+        }
+      }
+    },
+    "本轮记录已保存，准备好再继续。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This session is saved. Continue when you are ready."
+          }
+        }
+      }
+    },
+    "柔铃" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soft Bell"
+          }
+        }
+      }
     },
     "查看任务信息与累计专注记录。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View task details and accumulated focus history."
+          }
+        }
+      }
     },
     "标签" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tag"
+          }
+        }
+      }
     },
     "标签（可选）" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tag (Optional)"
+          }
+        }
+      }
     },
     "标记完成" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mark Complete"
+          }
+        }
+      }
     },
     "欢迎使用息刻" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to Xike"
+          }
+        }
+      }
     },
     "正在进行中的本轮保持当前参数；修改从下一轮生效。短休息会先显示 1.5 秒提示，再开始倒计时。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The current session keeps its settings; changes apply next session. A 1.5-second prompt appears before the countdown."
+          }
+        }
+      }
     },
     "此操作无法撤销，不会影响当前计时和设置。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action cannot be undone and will not affect the current timer or settings."
+          }
+        }
+      }
     },
     "每次微休息结束后重新随机；最后不足完整微休息时不再提示。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The interval is randomized after each micro-break; no prompt is shown when there is not enough time for a full micro-break."
+          }
+        }
+      }
     },
     "每次随机" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Randomize Each Time"
+          }
+        }
+      }
     },
     "永久清除" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Permanently"
+          }
+        }
+      }
     },
     "浮层不会抢走当前 App 的键盘焦点。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The overlay will not take keyboard focus from the current app."
+          }
+        }
+      }
     },
     "深度工作（120 分钟）" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deep Work (120 min)"
+          }
+        }
+      }
     },
     "清除全部专注记录？" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear all focus records?"
+          }
+        }
+      }
     },
     "清除全部记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear All Records"
+          }
+        }
+      }
+    },
+    "清风" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Breeze"
+          }
+        }
+      }
     },
     "版本" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
+          }
+        }
+      }
     },
     "状态" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        }
+      }
+    },
+    "现在休息 %lld 分钟吧。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take a %lld-minute break now."
+          }
+        }
+      }
+    },
+    "用 \\\\(.applicationName) 开始专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start focus with \\\\(.applicationName)"
+          }
+        }
+      }
+    },
+    "用 %lld 分钟进入自己的节奏" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find your rhythm with %lld minutes"
+          }
+        }
+      }
+    },
+    "由你决定何时继续" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue when you are ready"
+          }
+        }
+      }
     },
     "登录时启动息刻" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Launch Xike at Login"
+          }
+        }
+      }
+    },
+    "登录项服务当前不可用。请确认 App 位于“应用程序”文件夹中。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login items are currently unavailable. Make sure the app is in the Applications folder."
+          }
+        }
+      }
+    },
+    "目前没有可暂停或继续的专注。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is no focus session to pause or resume."
+          }
+        }
+      }
     },
     "目前没有正在进行的专注。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is no active focus session."
+          }
+        }
+      }
+    },
+    "看看远处" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Look into the distance"
+          }
+        }
+      }
     },
     "睡眠、锁屏或离线时间没有计入本轮。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep, screen-lock, and offline time were not counted in this session."
+          }
+        }
+      }
+    },
+    "短休息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro-break"
+          }
+        }
+      }
+    },
+    "短休息倒计时" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro-break countdown"
+          }
+        }
+      }
     },
     "短休息即将开始" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro-break starting"
+          }
+        }
+      }
+    },
+    "短休息开始" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro-break Starting"
+          }
+        }
+      }
+    },
+    "短暂离开屏幕，让注意力重新变得清晰。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step away from the screen briefly and let your attention clear."
+          }
+        }
+      }
+    },
+    "离开屏幕" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step away from the screen"
+          }
+        }
+      }
+    },
+    "离开屏幕，好好恢复" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step away from the screen and recover"
+          }
+        }
+      }
+    },
+    "离开屏幕，好好恢复。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step away from the screen and recover."
+          }
+        }
+      }
     },
     "离线时间不会计入专注。恢复后由你决定何时继续。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline time is not counted as focus time. After resuming, you decide when to continue."
+          }
+        }
+      }
     },
     "窗口" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window"
+          }
+        }
+      }
+    },
+    "立即结束本次短休息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End this micro-break now"
+          }
+        }
+      }
     },
     "第 %lld 次短休息" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micro-break #%lld"
+          }
+        }
+      }
+    },
+    "等待你继续" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for you to resume"
+          }
+        }
+      }
     },
     "等待系统设置批准" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for approval in System Settings"
+          }
+        }
+      }
+    },
+    "系统尚未询问通知权限。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The system has not asked for notification permission yet."
+          }
+        }
+      }
+    },
+    "系统通知已允许。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System notifications are enabled."
+          }
+        }
+      }
+    },
+    "系统通知已关闭；声音和微休息浮层仍会正常工作。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System notifications are off; sounds and the break overlay will still work."
+          }
+        }
+      }
+    },
+    "累计专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Focus"
+          }
+        }
+      }
     },
     "结束" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End"
+          }
+        }
+      }
+    },
+    "结束 \\\\(.applicationName) 专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End \\\\(.applicationName) focus"
+          }
+        }
+      }
     },
     "结束专注" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End Focus"
+          }
+        }
+      }
     },
     "结束休息" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End Break"
+          }
+        }
+      }
+    },
+    "结束后会把已完成时间记录为中止。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ending now will record the completed time as abandoned."
+          }
+        }
+      }
     },
     "结束并记录为中止" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End and Record as Abandoned"
+          }
+        }
+      }
+    },
+    "结束并退出" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End and Quit"
+          }
+        }
+      }
     },
     "结束当前这一轮？" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End this session?"
+          }
+        }
+      }
     },
     "结束息刻专注" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End Xike Focus"
+          }
+        }
+      }
     },
     "结束本轮" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End Session"
+          }
+        }
+      }
+    },
+    "结束长休息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End Long Break"
+          }
+        }
+      }
     },
     "结束长休息，决定是否开始下一轮专注" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End the long break and decide whether to start the next focus session"
+          }
+        }
+      }
     },
     "继续" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume"
+          }
+        }
+      }
     },
     "继续专注" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume Focus"
+          }
+        }
+      }
     },
     "编辑" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        }
+      }
     },
     "编辑任务" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Task"
+          }
+        }
+      }
     },
     "节律" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rhythm"
+          }
+        }
+      }
     },
     "记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
+          }
+        }
+      }
     },
     "记录用于今天和近 7 天摘要，不会上传或同步。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Records are used for summaries and are not uploaded or synced."
+          }
+        }
+      }
+    },
+    "设备已经恢复，请选择继续本轮或结束本轮。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your device is active again. Choose whether to resume or end this session."
+          }
+        }
+      }
     },
     "设置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
     },
     "设置预计时长" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set Estimated Duration"
+          }
+        }
+      }
     },
     "试听" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview"
+          }
+        }
+      }
     },
     "试听 %@" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview %@"
+          }
+        }
+      }
     },
     "试听柔铃" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview Soft Bell"
+          }
+        }
+      }
+    },
+    "请在系统设置的“登录项”中允许息刻。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow Xike in Login Items in System Settings."
+          }
+        }
+      }
+    },
+    "请暂时离开屏幕" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step away from the screen for a moment"
+          }
+        }
+      }
+    },
+    "请暂时离开屏幕，让眼睛和肩颈放松一下。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step away from the screen and relax your eyes, neck, and shoulders."
+          }
+        }
+      }
+    },
+    "跳过" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        }
+      }
+    },
+    "跳过短休息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip Micro-break"
+          }
+        }
+      }
     },
     "跳过长休息" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip Long Break"
+          }
+        }
+      }
     },
     "轻节律（45 分钟）" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gentle (45 min)"
+          }
+        }
+      }
     },
     "近 7 天" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last 7 Days"
+          }
+        }
+      }
     },
     "近七天专注时长图表" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus duration chart for the last seven days"
+          }
+        }
+      }
+    },
+    "这一轮已经完成，现在安心恢复。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This session is complete. Take time to recover."
+          }
+        }
+      }
     },
     "退出" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit"
+          }
+        }
+      }
     },
     "选择 %@" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select %@"
+          }
+        }
+      }
     },
     "选择一个任务" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a Task"
+          }
+        }
+      }
+    },
+    "选择一件重要的事，进入自己的节奏。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose one important thing and find your rhythm."
+          }
+        }
+      }
+    },
+    "选择开始下一次专注或结束专注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose whether to start the next focus session or end focus"
+          }
+        }
+      }
     },
     "通用" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        }
+      }
     },
     "通知" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        }
+      }
+    },
+    "通知服务只能从 Xike.app 中使用。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The notification service is only available from Xike.app."
+          }
+        }
+      }
+    },
+    "通知权限未开启。提示音和休息浮层仍可正常使用。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications are off. Sounds and the break overlay will still work."
+          }
+        }
+      }
     },
     "重新打开" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reopen"
+          }
+        }
+      }
+    },
+    "长休息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long Break"
+          }
+        }
+      }
+    },
+    "长休息 \\\\(store.preferences.configuration.longBreakMinutes) 分钟" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long break duration"
+          }
+        }
+      }
     },
     "长休息 %lld 分钟" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long break %lld min"
+          }
+        }
+      }
     },
     "长休息和恢复提醒" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long-break and resume reminders"
+          }
+        }
+      }
+    },
+    "长休息开始" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long break starting"
+          }
+        }
+      }
+    },
+    "长休息必须在 1 到 60 分钟之间。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long break must be between 1 and 60 minutes."
+          }
+        }
+      }
+    },
+    "长休息结束" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long Break Ended"
+          }
+        }
+      }
+    },
+    "长休息结束，请决定下一步" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long break ended; decide what comes next"
+          }
+        }
+      }
+    },
+    "随机提示" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Random Prompts"
+          }
+        }
+      }
+    },
+    "随机提示已开启" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Random prompts enabled"
+          }
+        }
+      }
+    },
+    "随机提示的最大间隔必须短于专注时长。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The maximum prompt interval must be shorter than the focus duration."
+          }
+        }
+      }
+    },
+    "随机提示的最小间隔不能大于最大间隔。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The minimum prompt interval cannot exceed the maximum."
+          }
+        }
+      }
     },
     "随机提示间隔" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Random Prompt Interval"
+          }
+        }
+      }
+    },
+    "随机提示间隔必须在 1 到 30 分钟之间。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prompt interval must be between 1 and 30 minutes."
+          }
+        }
+      }
     },
     "音量" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume"
+          }
+        }
+      }
+    },
+    "音量必须在 0 到 1 之间。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume must be between 0 and 1."
+          }
+        }
+      }
     },
     "预览" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview"
+          }
+        }
+      }
+    },
+    "预计" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimated"
+          }
+        }
+      }
     },
     "预计 %lld 分钟" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimated %lld min"
+          }
+        }
+      }
+    },
+    "默认每 3–5 分钟，用柔和声音提醒你。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By default, a gentle sound reminds you every 3–5 minutes."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

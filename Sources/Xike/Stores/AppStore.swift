@@ -125,37 +125,90 @@ final class AppStore {
     }
 
     var phaseTitle: String {
-        if recoverySnapshot != nil { return "待恢复专注" }
-        if engine.isPaused { return "已暂停" }
+        if recoverySnapshot != nil { return "待恢复专注".xikeLocalized }
+        if engine.isPaused { return "已暂停".xikeLocalized }
         return switch engine.phase {
-        case .idle: "准备专注"
-        case .focusing: "专注中"
-        case .microBreak: engine.isMicroBreakIntro(at: displayDate) ? "短休息开始" : "短休息"
-        case .longBreak: "长休息"
-        case .awaitingNextCycle: "本轮完成"
+        case .idle: "准备专注".xikeLocalized
+        case .focusing: "专注中".xikeLocalized
+        case .microBreak: engine.isMicroBreakIntro(at: displayDate) ? "短休息开始".xikeLocalized : "短休息".xikeLocalized
+        case .longBreak: "长休息".xikeLocalized
+        case .awaitingNextCycle: "本轮完成".xikeLocalized
         }
     }
 
     var phaseSubtitle: String {
         if engine.isPaused {
-            return engine.pauseReason == .manual ? "由你决定何时继续" : "回来后继续本轮"
+            return engine.pauseReason == .manual ? "由你决定何时继续".xikeLocalized : "回来后继续本轮".xikeLocalized
         }
         return switch engine.phase {
-        case .idle: "用 \(preferences.configuration.focusMinutes) 分钟进入自己的节奏"
-        case .focusing: "提示会在合适的时候出现"
-        case .microBreak: engine.isMicroBreakIntro(at: displayDate) ? "请暂时离开屏幕" : "望向远处，放松肩颈"
-        case .longBreak: "离开屏幕，好好恢复"
-        case .awaitingNextCycle: "准备好后再开始下一轮"
+        case .idle: XikeText.format("用 %lld 分钟进入自己的节奏", preferences.configuration.focusMinutes)
+        case .focusing: "提示会在合适的时候出现".xikeLocalized
+        case .microBreak: engine.isMicroBreakIntro(at: displayDate) ? "请暂时离开屏幕".xikeLocalized : "望向远处，放松肩颈".xikeLocalized
+        case .longBreak: "离开屏幕，好好恢复".xikeLocalized
+        case .awaitingNextCycle: "准备好后再开始下一轮".xikeLocalized
         }
     }
 
     var statusSystemImage: String {
         if recoverySnapshot != nil { return "arrow.counterclockwise.circle" }
+        // Paused is an overlay state, not a SessionPhase. It must win here so
+        // the menu-bar label does not keep showing the previous phase's icon.
+        if engine.isPaused { return "pause.circle.fill" }
         return engine.phase.systemImage
     }
 
     var isMicroBreakIntro: Bool {
         engine.isMicroBreakIntro(at: displayDate)
+    }
+
+    var todayStatistics: TodayStatistics {
+        history.statistics(for: statisticsDate)
+    }
+
+    /// The dashboard and menu-bar surfaces share this single, live total.
+    /// Records are attributed to their start day, matching the existing
+    /// history and seven-day chart semantics.
+    var todayActiveFocusDuration: TimeInterval {
+        Self.totalFocusDuration(
+            recordedDuration: history.activeFocusDuration(for: statisticsDate),
+            sessionStartedAt: engine.startedAt,
+            liveSessionDuration: engine.activeFocusDuration(at: displayDate),
+            for: statisticsDate
+        )
+    }
+
+    var recentDailyFocusSummaries: [DailyFocusSummary] {
+        let summaries = history.summaries(endingAt: statisticsDate)
+        guard let sessionStartedAt = engine.startedAt,
+              Calendar.current.isDate(sessionStartedAt, inSameDayAs: statisticsDate)
+        else {
+            return summaries
+        }
+
+        let liveDuration = engine.activeFocusDuration(at: displayDate)
+        return summaries.map { summary in
+            guard Calendar.current.isDate(summary.date, inSameDayAs: statisticsDate) else {
+                return summary
+            }
+            var updated = summary
+            updated.activeFocusDuration += liveDuration
+            return updated
+        }
+    }
+
+    static func totalFocusDuration(
+        recordedDuration: TimeInterval,
+        sessionStartedAt: Date?,
+        liveSessionDuration: TimeInterval,
+        for date: Date,
+        calendar: Calendar = .current
+    ) -> TimeInterval {
+        guard let sessionStartedAt,
+              calendar.isDate(sessionStartedAt, inSameDayAs: date)
+        else {
+            return recordedDuration
+        }
+        return recordedDuration + max(0, liveSessionDuration)
     }
 
     func start() {
@@ -265,7 +318,7 @@ final class AppStore {
         guard let snapshot = recoverySnapshot else { return }
         guard engine.restore(from: snapshot) else {
             discardSavedSession()
-            alertMessage = "上次的计时状态无法恢复，已安全清除。"
+            alertMessage = "上次的计时状态无法恢复，已安全清除。".xikeLocalized
             return
         }
         recoverySnapshot = nil
@@ -318,7 +371,7 @@ final class AppStore {
             loginItemState = try loginItemService.setEnabled(enabled)
             preferences.launchAtLogin = enabled
             if loginItemState == .requiresApproval {
-                alertMessage = "请在系统设置的“登录项”中允许息刻。"
+                alertMessage = "请在系统设置的“登录项”中允许息刻。".xikeLocalized
             }
         } catch {
             preferences.launchAtLogin = loginItemService.isEnabled

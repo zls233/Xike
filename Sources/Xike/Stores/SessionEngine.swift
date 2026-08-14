@@ -90,6 +90,25 @@ public final class SessionEngine {
         return max(0, focusDeadline.timeIntervalSince(reference))
     }
 
+    /// Active focus time for the running cycle at a given instant. The focus
+    /// interval includes its scheduled micro-breaks, matching the duration
+    /// stored in ``SessionRecordValue``. Pauses and the long-break interval do
+    /// not add time.
+    public func activeFocusDuration(at date: Date? = nil) -> TimeInterval {
+        guard phase.isRunning, let startedAt else { return 0 }
+
+        if phase == .longBreak || focusCompletedAt != nil {
+            return configuration.focusDuration
+        }
+
+        let requestedDate = date ?? nowProvider()
+        let reference = isPaused ? pausedAt ?? requestedDate : requestedDate
+        return min(
+            configuration.focusDuration,
+            max(0, reference.timeIntervalSince(startedAt) - accumulatedPausedDuration)
+        )
+    }
+
     public func remainingTime(at date: Date) -> TimeInterval {
         let referenceDate = isPaused ? pausedAt ?? date : date
         let deadline: Date?
