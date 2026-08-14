@@ -13,6 +13,7 @@ final class PreferencesStore {
         static let globalShortcut = "preferences.globalShortcut"
         static let breakOverlayEnabled = "preferences.breakOverlayEnabled"
         static let breakOverlayPosition = "preferences.breakOverlayPosition"
+        static let continuesTimingDuringWorkspaceInterruption = "preferences.continuesTimingDuringWorkspaceInterruption"
     }
 
     var configuration: FocusConfiguration {
@@ -47,6 +48,12 @@ final class PreferencesStore {
         didSet { defaults.set(breakOverlayPosition.rawValue, forKey: Key.breakOverlayPosition) }
     }
 
+    /// When enabled, elapsed wall-clock time counts while the Mac is asleep,
+    /// locked, or its display is asleep. This is the default for new users.
+    var continuesTimingDuringWorkspaceInterruption: Bool {
+        didSet { defaults.set(continuesTimingDuringWorkspaceInterruption, forKey: Key.continuesTimingDuringWorkspaceInterruption) }
+    }
+
     @ObservationIgnored
     private let defaults: UserDefaults
 
@@ -68,6 +75,7 @@ final class PreferencesStore {
         breakOverlayEnabled = defaults.object(forKey: Key.breakOverlayEnabled) as? Bool ?? true
         breakOverlayPosition = defaults.string(forKey: Key.breakOverlayPosition)
             .flatMap(BreakOverlayPosition.init(rawValue:)) ?? .topTrailing
+        continuesTimingDuringWorkspaceInterruption = defaults.object(forKey: Key.continuesTimingDuringWorkspaceInterruption) as? Bool ?? true
     }
 
     func resetTimingDefaults() {

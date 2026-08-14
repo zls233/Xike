@@ -155,8 +155,6 @@ build_with_swiftpm() {
   <string>$MIN_SYSTEM_VERSION</string>
   <key>LSApplicationCategoryType</key>
   <string>public.app-category.productivity</string>
-  <key>LSUIElement</key>
-  <true/>
   <key>NSPrincipalClass</key>
   <string>NSApplication</string>
 </dict>
@@ -176,6 +174,8 @@ package_for_personal_use() {
   /bin/rm -rf "$SWIFTPM_APP_BUNDLE"
   /bin/mkdir -p "$DIST_DIR"
   /usr/bin/ditto "$APP_BUNDLE" "$SWIFTPM_APP_BUNDLE"
+  /usr/bin/xattr -cr "$SWIFTPM_APP_BUNDLE"
+  /usr/bin/xattr -d com.apple.FinderInfo "$SWIFTPM_APP_BUNDLE" 2>/dev/null || true
   /usr/bin/codesign --force --deep --sign - \
     --entitlements "$ROOT_DIR/Xike.entitlements" \
     "$SWIFTPM_APP_BUNDLE"

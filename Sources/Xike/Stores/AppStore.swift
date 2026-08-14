@@ -1,4 +1,3 @@
-import AppKit
 import Foundation
 import Observation
 
@@ -65,10 +64,10 @@ final class AppStore {
         self.engine.onEvent = { [weak self] event in
             self?.handle(event)
         }
-        workspaceMonitor.onPauseRequested = { [weak self] reason in
-            self?.pauseForWorkspace(reason)
+        workspaceMonitor.onInterruptionStarted = { [weak self] reason in
+            self?.pauseForWorkspaceInterruption(reason)
         }
-        workspaceMonitor.onResumePromptRequested = { [weak self] _ in
+        workspaceMonitor.onInterruptionEnded = { [weak self] _ in
             self?.offerResumeAfterWorkspaceInterruption()
         }
     }
@@ -513,12 +512,12 @@ final class AppStore {
         )
     }
 
-    private func pauseForWorkspace(_ reason: WorkspaceInterruptionReason) {
-        guard engine.canPause else { return }
+    private func pauseForWorkspaceInterruption(_ reason: WorkspaceInterruptionReason) {
+        guard !preferences.continuesTimingDuringWorkspaceInterruption,
+              engine.canPause
+        else { return }
         pausedAutomatically = engine.pause(reason: reason.pauseReason)
-        if pausedAutomatically {
-            persistSnapshot(force: true)
-        }
+        if pausedAutomatically { persistSnapshot(force: true) }
     }
 
     private func offerResumeAfterWorkspaceInterruption() {

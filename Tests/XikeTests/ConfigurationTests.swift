@@ -3,6 +3,20 @@ import XCTest
 @testable import Xike
 
 final class ConfigurationTests: XCTestCase {
+    @MainActor
+    func testWorkspaceInterruptionTimingPreferenceDefaultsToContinuingAndPersists() {
+        let suiteName = "PreferencesStoreTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let freshStore = PreferencesStore(defaults: defaults)
+        XCTAssertTrue(freshStore.continuesTimingDuringWorkspaceInterruption)
+
+        freshStore.continuesTimingDuringWorkspaceInterruption = false
+        let restoredStore = PreferencesStore(defaults: defaults)
+        XCTAssertFalse(restoredStore.continuesTimingDuringWorkspaceInterruption)
+    }
+
     func testDefaultsMatchProductContract() throws {
         let configuration = FocusConfiguration.default
 

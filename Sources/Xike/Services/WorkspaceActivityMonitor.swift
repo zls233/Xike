@@ -16,11 +16,11 @@ enum WorkspaceInterruptionReason: String, Hashable, Sendable {
     }
 }
 
-/// Converts overlapping AppKit workspace notifications into one pause and one resume prompt.
-/// It never resumes a session itself.
+/// Normalizes overlapping macOS sleep, screen, and lock notifications.
+/// The owner decides whether an interruption should pause a session.
 @MainActor
 final class WorkspaceActivityMonitor: NSObject {
-    typealias PauseHandler = @MainActor (WorkspaceInterruptionReason) -> Void
+    typealias InterruptionHandler = @MainActor (WorkspaceInterruptionReason) -> Void
     typealias ResumePromptHandler = @MainActor (Set<WorkspaceInterruptionReason>) -> Void
 
     private let notificationCenter: NotificationCenter
@@ -28,17 +28,17 @@ final class WorkspaceActivityMonitor: NSObject {
     private var interruptionCycle: Set<WorkspaceInterruptionReason> = []
     private var isMonitoring = false
 
-    var onPauseRequested: PauseHandler?
-    var onResumePromptRequested: ResumePromptHandler?
+    var onInterruptionStarted: InterruptionHandler?
+    var onInterruptionEnded: ResumePromptHandler?
 
     init(
         notificationCenter: NotificationCenter = NSWorkspace.shared.notificationCenter,
-        onPauseRequested: PauseHandler? = nil,
-        onResumePromptRequested: ResumePromptHandler? = nil
+        onInterruptionStarted: InterruptionHandler? = nil,
+        onInterruptionEnded: ResumePromptHandler? = nil
     ) {
         self.notificationCenter = notificationCenter
-        self.onPauseRequested = onPauseRequested
-        self.onResumePromptRequested = onResumePromptRequested
+        self.onInterruptionStarted = onInterruptionStarted
+        self.onInterruptionEnded = onInterruptionEnded
         super.init()
     }
 
@@ -50,42 +50,12 @@ final class WorkspaceActivityMonitor: NSObject {
         guard !isMonitoring else { return }
         isMonitoring = true
 
-        notificationCenter.addObserver(
-            self,
-            selector: #selector(workspaceWillSleep(_:)),
-            name: NSWorkspace.willSleepNotification,
-            object: nil
-        )
-        notificationCenter.addObserver(
-            self,
-            selector: #selector(workspaceDidWake(_:)),
-            name: NSWorkspace.didWakeNotification,
-            object: nil
-        )
-        notificationCenter.addObserver(
-            self,
-            selector: #selector(screensDidSleep(_:)),
-            name: NSWorkspace.screensDidSleepNotification,
-            object: nil
-        )
-        notificationCenter.addObserver(
-            self,
-            selector: #selector(screensDidWake(_:)),
-            name: NSWorkspace.screensDidWakeNotification,
-            object: nil
-        )
-        notificationCenter.addObserver(
-            self,
-            selector: #selector(sessionDidResignActive(_:)),
-            name: NSWorkspace.sessionDidResignActiveNotification,
-            object: nil
-        )
-        notificationCenter.addObserver(
-            self,
-            selector: #selector(sessionDidBecomeActive(_:)),
-            name: NSWorkspace.sessionDidBecomeActiveNotification,
-            object: nil
-        )
+        notificationCenter.addObserver(self, selector: #selector(workspaceWillSleep(_:)), name: NSWorkspace.willSleepNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(workspaceDidWake(_:)), name: NSWorkspace.didWakeNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(screensDidSleep(_:)), name: NSWorkspace.screensDidSleepNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(screensDidWake(_:)), name: NSWorkspace.screensDidWakeNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(sessionDidResignActive(_:)), name: NSWorkspace.sessionDidResignActiveNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(sessionDidBecomeActive(_:)), name: NSWorkspace.sessionDidBecomeActiveNotification, object: nil)
     }
 
     func stop() {
@@ -100,43 +70,22 @@ final class WorkspaceActivityMonitor: NSObject {
         guard activeInterruptions.insert(reason).inserted else { return }
         interruptionCycle.insert(reason)
         XikeLog.workspace.info("Workspace interruption began: \(reason.rawValue, privacy: .public)")
-
-        if activeInterruptions.count == 1 {
-            onPauseRequested?(reason)
-        }
+        if activeInterruptions.count == 1 { onInterruptionStarted?(reason) }
     }
 
     private func endInterruption(_ reason: WorkspaceInterruptionReason) {
         guard activeInterruptions.remove(reason) != nil else { return }
         XikeLog.workspace.info("Workspace interruption ended: \(reason.rawValue, privacy: .public)")
-
         guard activeInterruptions.isEmpty else { return }
         let completedCycle = interruptionCycle
         interruptionCycle.removeAll()
-        onResumePromptRequested?(completedCycle)
+        onInterruptionEnded?(completedCycle)
     }
 
-    @objc private func workspaceWillSleep(_ notification: Notification) {
-        beginInterruption(.systemSleep)
-    }
-
-    @objc private func workspaceDidWake(_ notification: Notification) {
-        endInterruption(.systemSleep)
-    }
-
-    @objc private func screensDidSleep(_ notification: Notification) {
-        beginInterruption(.screenSleep)
-    }
-
-    @objc private func screensDidWake(_ notification: Notification) {
-        endInterruption(.screenSleep)
-    }
-
-    @objc private func sessionDidResignActive(_ notification: Notification) {
-        beginInterruption(.sessionInactive)
-    }
-
-    @objc private func sessionDidBecomeActive(_ notification: Notification) {
-        endInterruption(.sessionInactive)
-    }
+    @objc private func workspaceWillSleep(_ notification: Notification) { beginInterruption(.systemSleep) }
+    @objc private func workspaceDidWake(_ notification: Notification) { endInterruption(.systemSleep) }
+    @objc private func screensDidSleep(_ notification: Notification) { beginInterruption(.screenSleep) }
+    @objc private func screensDidWake(_ notification: Notification) { endInterruption(.screenSleep) }
+    @objc private func sessionDidResignActive(_ notification: Notification) { beginInterruption(.sessionInactive) }
+    @objc private func sessionDidBecomeActive(_ notification: Notification) { endInterruption(.sessionInactive) }
 }

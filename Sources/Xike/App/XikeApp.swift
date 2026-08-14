@@ -5,12 +5,12 @@ import SwiftUI
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.setActivationPolicy(.regular)
         AppStore.shared.start()
+    }
 
-        if !AppStore.shared.preferences.hasCompletedOnboarding {
-            NSApp.activate(ignoringOtherApps: true)
-        }
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        false
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
@@ -54,9 +54,7 @@ struct XikeApp: App {
             ContentView(store: store)
         }
         .defaultSize(width: 980, height: 680)
-        .defaultLaunchBehavior(
-            store.preferences.hasCompletedOnboarding ? .suppressed : .presented
-        )
+        .defaultLaunchBehavior(.presented)
         .restorationBehavior(.disabled)
         .commands {
             CommandMenu("专注") {

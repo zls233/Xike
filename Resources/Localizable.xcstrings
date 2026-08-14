@@ -129,6 +129,9 @@
         }
       }
     },
+    "上次退出后的离线时间没有计入本轮。" : {
+
+    },
     "不打断键盘焦点，只邀请你暂时离开屏幕。" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -524,6 +527,9 @@
         }
       }
     },
+    "关闭后，合盖、锁屏或屏幕休眠会自动暂停；唤醒后由你决定何时继续。" : {
+
+    },
     "最短 \\\\(store.preferences.configuration.minimumPromptMinutes) 分钟" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -768,6 +774,9 @@
           }
         }
       }
+    },
+    "合盖或锁屏时继续计时" : {
+
     },
     "名称" : {
       "localizations" : {
@@ -2020,6 +2029,7 @@
       }
     },
     "睡眠、锁屏或离线时间没有计入本轮。" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2398,6 +2408,9 @@
           }
         }
       }
+    },
+    "计时" : {
+
     },
     "记录" : {
       "localizations" : {

@@ -450,6 +450,11 @@ final class MicroBreakPanelController: NSObject {
 }
 
 private struct MicroBreakPanelView: View {
+    private enum DecisionAction: Hashable {
+        case endFocus
+        case startNextFocus
+    }
+
     @ObservedObject var presentation: MicroBreakPresentation
     let onPrimaryAction: () -> Void
     let onSecondaryAction: () -> Void
@@ -457,6 +462,8 @@ private struct MicroBreakPanelView: View {
 
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var hoveredDecision: DecisionAction?
+    @State private var isSkipHovered = false
 
     var body: some View {
         GlassEffectContainer(spacing: 12) {
@@ -508,6 +515,7 @@ private struct MicroBreakPanelView: View {
                             decisionButton(
                                 secondaryButtonTitle,
                                 systemImage: "stop.fill",
+                                actionKind: .endFocus,
                                 isPrimary: false,
                                 action: onSecondaryAction
                             )
@@ -516,6 +524,7 @@ private struct MicroBreakPanelView: View {
                             decisionButton(
                                 primaryButtonTitle,
                                 systemImage: "play.fill",
+                                actionKind: .startNextFocus,
                                 isPrimary: true,
                                 action: onPrimaryAction
                             )
@@ -533,14 +542,24 @@ private struct MicroBreakPanelView: View {
                         Spacer(minLength: 0)
                         Button(action: onPrimaryAction) {
                             Label(primaryButtonTitle, systemImage: "forward.end.fill")
-                                .font(.callout.weight(.medium))
-                                .frame(minWidth: 82)
-                                .frame(height: 26)
+                                .font(.callout.weight(.semibold))
+                                .frame(minWidth: 108)
+                                .frame(height: 32)
                                 .contentShape(.rect)
                         }
-                            .buttonStyle(.glass)
-                            .buttonBorderShape(.capsule)
-                            .controlSize(.small)
+                            .buttonStyle(.plain)
+                            .foregroundStyle(.white)
+                            .background {
+                                Capsule().fill(Color.orange.gradient)
+                            }
+                            .overlay {
+                                Capsule()
+                                    .stroke(.white.opacity(0.28), lineWidth: 1)
+                            }
+                            .shadow(color: Color.orange.opacity(0.34), radius: 7, y: 2)
+                            .scaleEffect(isSkipHovered ? 1.03 : 1)
+                            .animation(reduceMotion ? nil : .easeOut(duration: 0.14), value: isSkipHovered)
+                            .onHover { isSkipHovered = $0 }
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 10)
@@ -570,25 +589,37 @@ private struct MicroBreakPanelView: View {
     private func decisionButton(
         _ title: String,
         systemImage: String,
+        actionKind: DecisionAction,
         isPrimary: Bool,
         action: @escaping () -> Void
     ) -> some View {
-        let button = Button(action: action) {
+        let isHovered = hoveredDecision == actionKind
+        let actionColor: Color = isPrimary ? .green : .orange
+        Button(action: action) {
             Label(title, systemImage: systemImage)
-                .font(.callout.weight(isPrimary ? .semibold : .medium))
+                .font(.callout.weight(.semibold))
                 .frame(maxWidth: .infinity)
-                .frame(height: 30)
+                .frame(height: 36)
                 .contentShape(.rect)
         }
-        .buttonBorderShape(.capsule)
-        .controlSize(.regular)
-
-        if isPrimary {
-            button
-                .buttonStyle(.glassProminent)
-                .tint(.accentColor)
-        } else {
-            button.buttonStyle(.glass)
+        .buttonStyle(.plain)
+        .foregroundStyle(.white)
+        .background {
+            Capsule().fill(actionColor.gradient)
+        }
+        .overlay {
+            Capsule()
+                .stroke(.white.opacity(isHovered ? 0.40 : 0.24), lineWidth: 1)
+        }
+        .shadow(
+            color: actionColor.opacity(isHovered ? 0.46 : 0.30),
+            radius: isHovered ? 10 : 7,
+            y: isHovered ? 3 : 2
+        )
+        .scaleEffect(isHovered ? 1.03 : 1)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.14), value: isHovered)
+        .onHover { isHovered in
+            hoveredDecision = isHovered ? actionKind : nil
         }
     }
 

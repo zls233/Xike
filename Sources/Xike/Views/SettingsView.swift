@@ -164,6 +164,16 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
+            Section("计时") {
+                Toggle("合盖或锁屏时继续计时", isOn: Binding(
+                    get: { store.preferences.continuesTimingDuringWorkspaceInterruption },
+                    set: { store.preferences.continuesTimingDuringWorkspaceInterruption = $0 }
+                ))
+                Text("关闭后，合盖、锁屏或屏幕休眠会自动暂停；唤醒后由你决定何时继续。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("休息浮层") {
                 Toggle("显示休息浮层", isOn: Binding(
                     get: { store.preferences.breakOverlayEnabled },

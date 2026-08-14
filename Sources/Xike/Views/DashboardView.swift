@@ -120,7 +120,7 @@ private struct ResumeSessionBanner: View {
                 .foregroundStyle(.orange)
             VStack(alignment: .leading, spacing: 2) {
                 Text("专注已安全暂停").font(.headline)
-                Text("睡眠、锁屏或离线时间没有计入本轮。")
+                Text("上次退出后的离线时间没有计入本轮。")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
